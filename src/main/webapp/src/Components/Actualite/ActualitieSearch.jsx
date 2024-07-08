@@ -3,8 +3,6 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import deletePic from "../../assets/supprimer-fichier.png";
 import modifyPic from "../../assets/bouton-modifier.png";
-import resetPic from "../../assets/reset.png";
-import searchPic from "../../assets/search.png";
 import addPic from "../../assets/stylo.png";
 import { Modal, Button, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,68 +11,60 @@ const ActualiteList = () => {
   const [actualites, setActualites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); // State for controlling modal visibility
   const [newActualite, setNewActualite] = useState({
     titre: "",
     contenu: "",
-    datePublication: "",
-    typeId: "",
-    types: [],
-    image: null,
+    datePublication: "", // Field for publication date
+    typeId: "", // Field for selected type ID
+    types: [], // To store types fetched from API
+    image: null, // Field for the image
   });
-  const [selectedTypeId, setSelectedTypeId] = useState("");
-  const [filteredTypeId, setFilteredTypeId] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false); // State for search input visibility
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const navigate = useNavigate();
 
-  const fetchActualites = async (typeId = "") => {
-    try {
-      let url = "http://localhost:8086/api/v1/actualites";
-      if (typeId) {
-        url += `/typeId/${typeId}`;
-      }
-      const response = await axios.get(url);
-      const actualitesWithImageUrls = response.data.map((actualite) => {
-        if (actualite.image) {
-          const byteCharacters = atob(actualite.image);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+  useEffect(() => {
+    const fetchActualites = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8086/api/v1/actualites"
+        );
+        const actualitesWithImageUrls = response.data.map((actualite) => {
+          if (actualite.image) {
+            const byteCharacters = atob(actualite.image);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: "image/jpeg" });
+
+            const imageUrl = URL.createObjectURL(blob);
+            return { ...actualite, imageUrl };
           }
-          const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { type: "image/jpeg" });
-          const imageUrl = URL.createObjectURL(blob);
-          return { ...actualite, imageUrl };
-        }
-        return actualite;
-      });
+          return actualite;
+        });
 
-      setActualites(actualitesWithImageUrls);
-      setLoading(false);
-    } catch (error) {
-      setError(error);
-      setLoading(false);
-    }
-  };
+        setActualites(actualitesWithImageUrls);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
 
-  const fetchTypes = async () => {
-    try {
-      const response = await axios.get("http://localhost:8086/api/v1/types");
-      setNewActualite((prevState) => ({
-        ...prevState,
-        types: response.data,
-      }));
-    } catch (error) {
-      console.error("Erreur lors de la récupération des types :", error);
-    }
-  };
+    const fetchTypes = async () => {
+      try {
+        const response = await axios.get("http://localhost:8086/api/v1/types");
+        setNewActualite((prevState) => ({
+          ...prevState,
+          types: response.data,
+        }));
+      } catch (error) {
+        console.error("Erreur lors de la récupération des types :", error);
+      }
+    };
 
-  useEffect(() => {
-    fetchActualites(filteredTypeId);
-  }, [filteredTypeId]);
-
-  useEffect(() => {
     fetchActualites();
     fetchTypes();
   }, []);
@@ -115,7 +105,7 @@ const ActualiteList = () => {
     formData.append("titre", newActualite.titre);
     formData.append("contenu", newActualite.contenu);
     formData.append("datePublication", newActualite.datePublication);
-    formData.append("typeId", newActualite.typeId);
+    formData.append("typeId", newActualite.typeId); // Change this line
     if (newActualite.image) {
       formData.append("image", newActualite.image);
     }
@@ -144,28 +134,12 @@ const ActualiteList = () => {
     }));
   };
 
-  const handleTypeChange = (e) => {
-    setSelectedTypeId(e.target.value);
-  };
-
-  const handleFilterClick = () => {
-    setFilteredTypeId(selectedTypeId);
-  };
-
-  const handleResetActualities = () => {
-    setFilteredTypeId("");
-  };
-
-  const handleToggleSearch = () => {
-    setSearchVisible(!searchVisible);
-    setSearchTerm(""); // Clear search term when hiding the search input
-  };
-
-  const handleSearchChange = (e) => {
+  const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredActualitesByTitle = actualites.filter((actualite) =>
+  // Filter actualites based on search term
+  const filteredActualites = actualites.filter((actualite) =>
     actualite.titre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -189,53 +163,21 @@ const ActualiteList = () => {
           />
         </button>
       </div>
+      <br />
+      <br />
+      {/* Search input */}
       <div className="mb-3">
-        <button onClick={handleToggleSearch}>
-          <img
-            src={searchPic}
-            alt="Rechercher"
-            style={{ width: "30px", height: "30px" }}
-          />
-        </button>
-        {searchVisible && (
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Rechercher par titre..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        )}
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Rechercher par titre..."
+          value={searchTerm}
+          onChange={handleSearch}
+        />
       </div>
-      <div className="d-flex justify-content-between align-items-center my-4">
-        <Form.Select
-          value={selectedTypeId}
-          onChange={handleTypeChange}
-          aria-label="Filtrer par type"
-        >
-          <option value="">Sélectionnez un type</option>
-          {newActualite.types.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.nom}
-            </option>
-          ))}
-        </Form.Select>
-        <Button onClick={handleFilterClick}>Filtrer</Button>
-        <button
-          onClick={handleResetActualities}
-          style={{ padding: "0", border: "none", background: "none" }}
-        >
-          <img
-            src={resetPic}
-            alt="Réinitialiser"
-            style={{ width: "30px", height: "30px" }}
-          />
-        </button>
-      </div>
-      <br />
-      <br />
+
       <div className="row row-cols-1 row-cols-md-4 g-4">
-        {filteredActualitesByTitle.map((actualite) => (
+        {filteredActualites.map((actualite) => (
           <div key={actualite.id} className="col">
             <div
               className="card h-100"
@@ -301,6 +243,8 @@ const ActualiteList = () => {
           </div>
         ))}
       </div>
+
+      {/* Modal for adding an actualite */}
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>Ajouter une Actualité</Modal.Title>
@@ -329,7 +273,7 @@ const ActualiteList = () => {
               />
             </Form.Group>
             <Form.Group controlId="formDatePublication">
-              <Form.Label>Date de Publication</Form.Label>
+              <Form.Label>Date de publication</Form.Label>
               <Form.Control
                 type="date"
                 name="datePublication"
@@ -340,26 +284,26 @@ const ActualiteList = () => {
             </Form.Group>
             <Form.Group controlId="formType">
               <Form.Label>Type</Form.Label>
-              <Form.Control
-                as="select"
+              <Form.Select
                 name="typeId"
                 value={newActualite.typeId}
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Sélectionnez un type</option>
+                <option value="">Sélectionner un type</option>
                 {newActualite.types.map((type) => (
                   <option key={type.id} value={type.id}>
                     {type.nom}
                   </option>
                 ))}
-              </Form.Control>
+              </Form.Select>
             </Form.Group>
             <Form.Group controlId="formImage">
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="file"
                 name="image"
+                accept="image/jpeg, image/png"
                 onChange={handleImageChange}
               />
             </Form.Group>
@@ -369,7 +313,6 @@ const ActualiteList = () => {
           </Form>
         </Modal.Body>
       </Modal>
-      <div style={{ height: "200px" }}></div>
     </div>
   );
 };
