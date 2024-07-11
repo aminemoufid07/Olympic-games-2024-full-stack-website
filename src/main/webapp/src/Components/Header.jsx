@@ -1,9 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "../assets/casanet logo.jpeg";
+import { auth } from "../util/firebase";
+import { useUserRole } from "../util/userRoleContext";
 
-const Header = () => {
+const Header = ({ currentUser }) => {
+  const userRole = useUserRole();
+
+  const handleSignOut = () => {
+    auth.signOut();
+  };
+
   return (
     <nav
       className="navbar navbar-expand-lg"
@@ -17,7 +24,6 @@ const Header = () => {
     >
       <div className="container-fluid">
         <Link className="navbar-brand me-10" to="/">
-          {/* <img src={logo} alt="Logo" width="200" height="60" /> */}
           <img src={logo} alt="Logo" width="100" height="80" />
         </Link>
         <div className="collapse navbar-collapse">
@@ -27,15 +33,17 @@ const Header = () => {
                 Accueil
               </Link>
             </li>
-            <li className="nav-item ms-4">
-              <Link
-                className="nav-link"
-                to="/types"
-                style={{ color: "#666666" }}
-              >
-                Types
-              </Link>
-            </li>
+            {userRole === "admin" && (
+              <li className="nav-item ms-4">
+                <Link
+                  className="nav-link"
+                  to="/types"
+                  style={{ color: "#666666" }}
+                >
+                  Types
+                </Link>
+              </li>
+            )}
             <li className="nav-item ms-4">
               <Link
                 className="nav-link"
@@ -45,16 +53,33 @@ const Header = () => {
                 Actualités
               </Link>
             </li>
+            {userRole === "admin" && (
+              <li className="nav-item ms-4">
+                <Link
+                  className="nav-link"
+                  to="/userManagement"
+                  style={{ color: "#666666" }}
+                >
+                  Gestion d'utilisateurs
+                </Link>
+              </li>
+            )}
           </ul>
           <ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
             <li className="nav-item">
-              <Link
-                className="nav-link"
-                to="/compte"
-                style={{ color: "#666666" }}
-              >
-                Compte
-              </Link>
+              {currentUser ? (
+                <button className="nav-link" onClick={handleSignOut}>
+                  Se déconnecter
+                </button>
+              ) : (
+                <Link
+                  className="nav-link"
+                  to="/compte"
+                  style={{ color: "#666666" }}
+                >
+                  Se connecter
+                </Link>
+              )}
             </li>
           </ul>
         </div>

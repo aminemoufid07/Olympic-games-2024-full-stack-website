@@ -30,7 +30,7 @@ public class Actualite implements Serializable {
     @Column(length = 100000)
     String contenu;
     @Lob
-    @Column(length = 100000)
+    @Column(length = 100000000)
     private byte[] image;
 
     public Actualite() {
