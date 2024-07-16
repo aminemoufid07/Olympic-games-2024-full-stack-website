@@ -146,6 +146,7 @@ const UsersManagement = () => {
           <Table striped bordered hover>
             <thead>
               <tr>
+                <th>username</th>
                 <th>Email</th>
                 <th>Rôle</th>
                 <th>Actions</th>
@@ -155,6 +156,7 @@ const UsersManagement = () => {
               {users.map((user) => (
                 <tr key={user.id}>
                   <td>{user.username}</td>
+                  <td>{user.email}</td>
                   <td>{user.role}</td>
                   <td>
                     <Button variant="link" onClick={() => handleEdit(user.id)}>

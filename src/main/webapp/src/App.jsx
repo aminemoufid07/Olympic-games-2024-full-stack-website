@@ -15,6 +15,7 @@ import PrivateRoute from "./PrivateRoute.jsx";
 import { auth, db } from "./util/firebase"; // Assurez-vous que db est correctement configuré
 import { doc, getDoc } from "firebase/firestore";
 import { UserRoleProvider } from "./util/userRoleContext.jsx";
+import EventList from "./Components/Scrapping/EventList.jsx";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -77,6 +78,7 @@ function App() {
                 <Route path="/userManagement" element={<UserManagement />} />
               </Route>
               <Route path="/actualites/:id" element={<ActualiteDetail />} />
+              <Route path="/Events" element={<EventList />} />
             </Routes>
           </main>
 

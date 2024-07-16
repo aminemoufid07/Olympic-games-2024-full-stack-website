@@ -6,7 +6,7 @@ import modifyPic from "../../assets/bouton-modifier.png";
 import resetPic from "../../assets/reset.png";
 import searchPic from "../../assets/search.png";
 import addPic from "../../assets/stylo.png";
-import filtrePic from "../../assets/filtre.png";
+import filtrePic from "../../assets/filtre-on.png";
 import { Modal, Button, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useUserRole } from "../../util/userRoleContext";
@@ -28,9 +28,9 @@ const ActualiteList = ({ currentUser }) => {
   const [selectedTypeId, setSelectedTypeId] = useState("");
   const [filteredTypeId, setFilteredTypeId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false); // State for search input visibility
+  const [searchVisible, setSearchVisible] = useState(true); // State for search input visibility
   const navigate = useNavigate();
-
+ 
   const fetchActualites = async (typeId = "") => {
     try {
       let url = "http://localhost:8086/api/v1/actualites";
@@ -192,10 +192,10 @@ const ActualiteList = ({ currentUser }) => {
           />
         )}
         <button
-          onClick={handleToggleSearch}
+          // onClick={handleToggleSearch}
           style={{ padding: "0", border: "none", background: "none" }}
         >
-          <img
+          <img  
             src={searchPic}
             alt="Rechercher"
             style={{ width: "40px", height: "40px", marginLeft: "10px" }}

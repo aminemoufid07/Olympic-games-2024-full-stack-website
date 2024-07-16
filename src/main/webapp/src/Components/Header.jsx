@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/casanet logo.jpeg";
+import logo from "../assets/logo_blanc.png";
 import { auth } from "../util/firebase";
 import { useUserRole } from "../util/userRoleContext";
 
@@ -15,10 +15,10 @@ const Header = ({ currentUser }) => {
     <nav
       className="navbar navbar-expand-lg"
       style={{
-        backgroundColor: "#f6f6f6",
+        backgroundColor: "#61B4E6",
         fontFamily: "'Open Sans', serif",
         fontSize: "20px",
-        color: "#666666",
+        color: "#FFFFFF",
         lineHeight: "40.1px",
       }}
     >
@@ -29,7 +29,7 @@ const Header = ({ currentUser }) => {
         <div className="collapse navbar-collapse">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-5">
             <li className="nav-item">
-              <Link className="nav-link" to="/" style={{ color: "#666666" }}>
+              <Link className="nav-link" to="/" style={{ color: "#FFFFFF" }}>
                 Accueil
               </Link>
             </li>
@@ -38,7 +38,7 @@ const Header = ({ currentUser }) => {
                 <Link
                   className="nav-link"
                   to="/types"
-                  style={{ color: "#666666" }}
+                  style={{ color: "#FFFFFF" }}
                 >
                   Types
                 </Link>
@@ -48,7 +48,7 @@ const Header = ({ currentUser }) => {
               <Link
                 className="nav-link"
                 to="/actualites"
-                style={{ color: "#666666" }}
+                style={{ color: "#FFFFFF" }}
               >
                 Actualités
               </Link>
@@ -58,24 +58,33 @@ const Header = ({ currentUser }) => {
                 <Link
                   className="nav-link"
                   to="/userManagement"
-                  style={{ color: "#666666" }}
+                  style={{ color: "#FFFFFF" }}
                 >
                   Gestion d'utilisateurs
                 </Link>
               </li>
             )}
           </ul>
+          {/* <li className="nav-item ms-4">
+                <Link
+                  className="nav-link"
+                  to="/Events"
+                  style={{ color: "#FFFFFF" }}
+                >
+                  Events
+                </Link>
+              </li> */}
           <ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
             <li className="nav-item">
               {currentUser ? (
-                <button className="nav-link" onClick={handleSignOut}>
+                <button style={{ color: "#FFFFFF" }} className="nav-link" onClick={handleSignOut}>
                   Se déconnecter
                 </button>
               ) : (
                 <Link
                   className="nav-link"
                   to="/compte"
-                  style={{ color: "#666666" }}
+                  style={{ color: "#FFFFFF" }}
                 >
                   Se connecter
                 </Link>

@@ -44,43 +44,78 @@ const ActualiteDetail = () => {
     return <p className="text-center mt-5">Aucune actualité trouvée</p>;
 
   return (
-    <div className="container py-4">
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <div className="text-muted mb-3">
-            <h4 className="text-uppercase mb-0">
-              {actualite.type && actualite.type.nom}
-            </h4>
-          </div>
-          <h1 className="card-title mb-3">{actualite.titre}</h1>
-          {actualite.datePublication && (
-            <p className="card-subtitle mb-3">
-              Publié le : {actualite.datePublication}
-            </p>
-          )}
-          <br />
-          <br />
-          {actualite.imageUrl && (
-            <img
-              src={actualite.imageUrl}
-              alt={actualite.titre}
-              className="img-fluid rounded mb-4"
-            />
-          )}
+    <div
+      className="actualite-card"
+      style={{
+        padding: "20px",
+        backgroundColor: "#fefefe",
+        borderRadius: "10px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        marginBottom: "30px",
+      }}
+    >
+      <div className="container py-4">
+        <div className="card shadow-sm">
+          <div className="card-body">
+            <div className="text-muted mb-3">
+              <h4 className="text-uppercase mb-0">
+                {actualite.type && actualite.type.nom}
+              </h4>
+            </div>
+            <h1
+              className="card-title"
+              style={{
+                fontFamily: "Georgia, serif",
+                fontSize: "2rem",
+                color: "#333",
+                marginBottom: "10px",
+              }}
+            >
+              {actualite.titre}
+            </h1>
+            {actualite.datePublication && (
+              <p
+                className="card-subtitle"
+                style={{
+                  fontFamily: "Arial, sans-serif",
+                  fontSize: "1rem",
+                  color: "#666",
+                  marginBottom: "20px",
+                }}
+              >
+                Publié le : {actualite.datePublication}
+              </p>
+            )}
+            <br />
+            <br />
+            {actualite.imageUrl && (
+              <img
+                src={actualite.imageUrl}
+                alt={actualite.titre}
+                className="img-fluid rounded mb-4"
+              />
+            )}
 
-          <br />
-          <br />
-          
-          <p
-            className="card-text"
-            style={{
-              fontFamily: "Arial, sans-serif",
-              fontSize: "1.2rem",
-              lineHeight: "1.6",
-            }}
-          >
-            {actualite.contenu}
-          </p>
+            <br />
+            <br />
+
+            <p
+              className="card-text"
+              style={{
+                fontFamily: "Georgia, serif",
+                fontSize: "1.1rem",
+                lineHeight: "1.75",
+                color: "#333",
+                backgroundColor: "#f9f9f9",
+                padding: "10px 15px",
+                borderRadius: "8px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                whiteSpace: "pre-line",
+              }}
+            >
+              {actualite.contenu}
+            </p>
+          </div>
         </div>
       </div>
     </div>

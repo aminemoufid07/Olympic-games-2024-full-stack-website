@@ -1,24 +1,24 @@
 import React, { useState } from "react";
-import { auth } from "../../util/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../util/firebase"; // Assurez-vous que db est correctement configuré
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { Card, Form, Button } from "react-bootstrap"; // Import des composants Card, Form et Button de Bootstrap
+import { Card, Form, Button, Container, Row, Col, Modal } from "react-bootstrap";
+import logo from "../../assets/casanet logo.jpeg";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [forgotPasswordError, setForgotPasswordError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      // Accès à l'utilisateur connecté si nécessaire
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       navigate("/");
     } catch (error) {
@@ -27,19 +27,42 @@ const LoginPage = () => {
   };
 
   const handleSignUp = () => {
-    navigate("/inscription"); // Redirection vers la page d'inscription
+    navigate("/inscription");
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("username", "==", forgotPasswordEmail));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        await sendPasswordResetEmail(auth, forgotPasswordEmail);
+        alert("E-mail de réinitialisation envoyé.");
+        setShowForgotPasswordModal(false);
+      } else {
+        setForgotPasswordError("Aucun utilisateur trouvé avec cet e-mail.");
+      }
+    } catch (error) {
+      setForgotPasswordError(error.message);
+    }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <Card>
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col md={6}>
+          <Card className="p-4">
             <Card.Body>
-              <Card.Title className="text-center">Login</Card.Title>
+              <div className="text-center mb-4">
+                <img src={logo} alt="Logo" width="100" />
+              </div>
+              <Card.Title className="text-center mb-4">
+                Connectez-vous à votre compte
+              </Card.Title>
               <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label>E-mail</Form.Label>
                   <Form.Control
                     type="email"
                     value={email}
@@ -49,7 +72,7 @@ const LoginPage = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                  <Form.Label>Password</Form.Label>
+                  <Form.Label>Mot de passe</Form.Label>
                   <Form.Control
                     type="password"
                     value={password}
@@ -60,19 +83,59 @@ const LoginPage = () => {
 
                 {error && <p style={{ color: "red" }}>{error}</p>}
 
-                <Button variant="primary" type="submit" className="me-2">
-                  Login
+                <Button variant="primary" type="submit" className="w-100 mb-3">
+                  Connexion
                 </Button>
 
-                <Button variant="secondary" onClick={handleSignUp}>
-                  S'inscrire
-                </Button>
+                <div className="text-center">
+                  <Button
+                    variant="link"
+                    onClick={() => setShowForgotPasswordModal(true)}
+                    
+                  >
+                    Mot de passe oublié ?
+                  </Button>
+                </div>
+
+                <div className="text-center mt-3">
+                  <Button variant="link" onClick={handleSignUp}>
+                    Vous découvrez ce site ? Créez un compte
+                  </Button>
+                </div>
               </Form>
             </Card.Body>
           </Card>
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Row>
+
+      <Modal show={showForgotPasswordModal} onHide={() => setShowForgotPasswordModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Réinitialiser le mot de passe</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>  
+          <Form>
+            <Form.Group controlId="formForgotPasswordEmail">
+              <Form.Label>E-mail</Form.Label>
+              <Form.Control
+                type="email"
+                value={forgotPasswordEmail}
+                onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                required
+              />
+            </Form.Group>
+            {forgotPasswordError && <p style={{ color: "red" }}>{forgotPasswordError}</p>}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowForgotPasswordModal(false)}>
+            Annuler
+          </Button>
+          <Button variant="primary" onClick={handleForgotPassword}>
+            Envoyer
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 };
 
