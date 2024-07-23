@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface TypeRepository extends JpaRepository<Type, Long> {
+public interface SportRepository extends JpaRepository<Sport, Long> {
 	
 }
 

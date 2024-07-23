@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import TypeList from "./Components/Type/TypeList";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import ActualiteList from "./Components/Actualite/ActualiteList";
 import ActualiteDetail from "./Components/Actualite/ActualiteDetail";
+import CommuniqueList from "./Components/Communique/CommuniqueList";
+import CommuniqueDetail from "./Components/Communique/CommuniqueDetail";
+import CommuniqueEdit from "./Components/Communique/CommuniqueEdit";
+import AthleteList from "./Components/Athlete/AthleteList";
+import PaysList from "./Components/Pays/PaysList";
+import AthleteDetail from "./Components/Athlete/AthleteDetail";
+import AthleteEdit from "./Components/Athlete/AthleteEdit";
 import ActualiteEdit from "./Components/Actualite/ActualiteEdit";
 import LoginPage from "./Components/Authentification/LoginPage.jsx";
 import SignUpPage from "./Components/Authentification/SignUpPage.jsx";
@@ -15,7 +21,7 @@ import PrivateRoute from "./PrivateRoute.jsx";
 import { auth, db } from "./util/firebase"; // Assurez-vous que db est correctement configuré
 import { doc, getDoc } from "firebase/firestore";
 import { UserRoleProvider } from "./util/userRoleContext.jsx";
-import EventList from "./Components/Scrapping/EventList.jsx";
+import SportList from "./Components/Sport/SportList.jsx";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -61,10 +67,16 @@ function App() {
             <Routes>
               <Route path="/" element={<ActualiteList />} />
               <Route
-                path="/types"
+                path="/sports"
                 element={<PrivateRoute allowedRoles={["admin"]} />}
               >
-                <Route path="/types" element={<TypeList />} />
+                <Route path="/sports" element={<SportList />} />
+              </Route>
+              <Route
+                path="/pays"
+                element={<PrivateRoute allowedRoles={["admin"]} />}
+              >
+                <Route path="/pays" element={<PaysList />} />
               </Route>
 
               <Route path="/actualites" element={<ActualiteList />} />
@@ -78,7 +90,15 @@ function App() {
                 <Route path="/userManagement" element={<UserManagement />} />
               </Route>
               <Route path="/actualites/:id" element={<ActualiteDetail />} />
-              <Route path="/Events" element={<EventList />} />
+              <Route path="/communiques" element={<CommuniqueList />} />
+              <Route path="/communiques/:id" element={<CommuniqueDetail />} />
+              <Route
+                path="/communiques/edit/:id"
+                element={<CommuniqueEdit />}
+              />
+              <Route path="/athletes" element={<AthleteList />} />
+              <Route path="/athletes/:id" element={<AthleteDetail />} />
+              <Route path="/athletes/edit/:id" element={<AthleteEdit />} />
             </Routes>
           </main>
 

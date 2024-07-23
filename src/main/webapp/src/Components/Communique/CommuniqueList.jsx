@@ -11,49 +11,49 @@ import { Modal, Button, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useUserRole } from "../../util/userRoleContext";
 
-const ActualiteList = ({ currentUser }) => {
+const CommuniqueList = ({ currentUser }) => {
   const userRole = useUserRole();
-  const [actualites, setActualites] = useState([]);
+  const [communiques, setCommuniques] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [newActualite, setNewActualite] = useState({
+  const [newCommunique, setNewCommunique] = useState({
     titre: "",
     contenu: "",
     datePublication: "",
-    sportId: "",
-    sports: [],
+    typeId: "",
+    types: [],
     image: null,
   });
-  const [selectedSportId, setSelectedSportId] = useState("");
-  const [filteredSportId, setFilteredSportId] = useState("");
+  const [selectedTypeId, setSelectedTypeId] = useState("");
+  const [filteredTypeId, setFilteredTypeId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchVisible, setSearchVisible] = useState(true); // State for search input visibility
   const navigate = useNavigate();
 
-  const fetchActualites = async (sportId = "") => {
+  const fetchCommuniques = async (typeId = "") => {
     try {
-      let url = "http://localhost:8086/api/v1/actualites";
-      if (sportId) {
-        url += `/sportId/${sportId}`;
+      let url = "http://localhost:8086/api/v1/communiques";
+      if (typeId) {
+        url += `/typeId/${typeId}`;
       }
       const response = await axios.get(url);
-      const actualitesWithImageUrls = response.data.map((actualite) => {
-        if (actualite.image) {
-          const byteCharacters = atob(actualite.image);
+      const communiquesWithImageUrls = response.data.map((communique) => {
+        if (communique.image) {
+          const byteCharacters = atob(communique.image);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
           }
           const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { sport: "image/jpeg" });
+          const blob = new Blob([byteArray], { type: "image/jpeg" });
           const imageUrl = URL.createObjectURL(blob);
-          return { ...actualite, imageUrl };
+          return { ...communique, imageUrl };
         }
-        return actualite;
+        return communique;
       });
 
-      setActualites(actualitesWithImageUrls);
+      setCommuniques(communiquesWithImageUrls);
       setLoading(false);
     } catch (error) {
       setError(error);
@@ -61,35 +61,18 @@ const ActualiteList = ({ currentUser }) => {
     }
   };
 
-  const fetchSports = async () => {
-    try {
-      const response = await axios.get("http://localhost:8086/api/v1/sports");
-      setNewActualite((prevState) => ({
-        ...prevState,
-        sports: response.data,
-      }));
-    } catch (error) {
-      console.error("Erreur lors de la récupération des sports :", error);
-    }
-  };
-
   useEffect(() => {
-    fetchActualites(filteredSportId);
-  }, [filteredSportId]);
-
-  useEffect(() => {
-    fetchActualites();
-    fetchSports();
+    fetchCommuniques();
   }, []);
 
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:8086/api/v1/actualites/${id}`)
+      .delete(`http://localhost:8086/api/v1/communiques/${id}`)
       .then(() => {
-        const updatedActualites = actualites.filter(
-          (actualite) => actualite.id !== id
+        const updatedCommuniques = communiques.filter(
+          (communique) => communique.id !== id
         );
-        setActualites(updatedActualites);
+        setCommuniques(updatedCommuniques);
       })
       .catch((error) => {
         console.error("Erreur lors de la suppression :", error);
@@ -97,37 +80,36 @@ const ActualiteList = ({ currentUser }) => {
   };
 
   const handleCardClick = (id) => {
-    navigate(`/actualites/${id}`);
+    navigate(`/communiques/${id}`);
   };
 
   const handleModalClose = () => {
     setShowModal(false);
-    setNewActualite({
+    setNewCommunique({
       titre: "",
       contenu: "",
       datePublication: "",
-      sportId: "",
+
       image: null,
-      sports: newActualite.sports,
     });
   };
 
-  const handleAddActualite = (e) => {
+  const handleAddCommunique = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("titre", newActualite.titre);
-    formData.append("contenu", newActualite.contenu);
-    formData.append("datePublication", newActualite.datePublication);
-    formData.append("sportId", newActualite.sportId);
-    if (newActualite.image) {
-      formData.append("image", newActualite.image);
+    formData.append("titre", newCommunique.titre);
+    formData.append("contenu", newCommunique.contenu);
+    formData.append("datePublication", newCommunique.datePublication);
+
+    if (newCommunique.image) {
+      formData.append("image", newCommunique.image);
     }
 
     axios
-      .post("http://localhost:8086/api/v1/actualites", formData)
+      .post("http://localhost:8086/api/v1/communiques", formData)
       .then((response) => {
-        const updatedActualites = [...actualites, response.data];
-        setActualites(updatedActualites);
+        const updatedCommuniques = [...communiques, response.data];
+        setCommuniques(updatedCommuniques);
         handleModalClose();
       })
       .catch((error) => {
@@ -137,39 +119,27 @@ const ActualiteList = ({ currentUser }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewActualite((prevState) => ({ ...prevState, [name]: value }));
+    setNewCommunique((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleImageChange = (e) => {
-    setNewActualite((prevState) => ({
+    setNewCommunique((prevState) => ({
       ...prevState,
       image: e.target.files[0],
     }));
   };
 
-  const handleSportChange = (e) => {
-    setSelectedSportId(e.target.value);
-  };
-
-  const handleFilterClick = () => {
-    setFilteredSportId(selectedSportId);
-  };
-
-  const handleResetActualities = () => {
-    setFilteredSportId("");
-  };
-
-  const handleToggleSearch = () => {
-    setSearchVisible(!searchVisible);
-    setSearchTerm(""); // Clear search term when hiding the search input
-  };
+  // const handleToggleSearch = () => {
+  //   setSearchVisible(!searchVisible);
+  //   setSearchTerm(""); // Clear search term when hiding the search input
+  // };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredActualitesByTitle = actualites.filter((actualite) =>
-    actualite.titre.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCommuniquesByTitle = communiques.filter((communique) =>
+    communique.titre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) return <p>Chargement...</p>;
@@ -180,10 +150,10 @@ const ActualiteList = ({ currentUser }) => {
       <br />
       <br />
       <div className="d-flex justify-content-between align-items-center">
-        <h1 className="my-4">Actualités</h1>
+        <h1 className="my-4">Communiques de presse</h1>
         {searchVisible && (
           <input
-            sport="text"
+            type="text"
             className="form-control ms-auto"
             style={{ width: "200px" }}
             placeholder="Rechercher par titre..."
@@ -205,48 +175,6 @@ const ActualiteList = ({ currentUser }) => {
       <br />
       <br />
 
-      <div className="d-flex justify-content-center align-items-center mb-4">
-        <span style={{ marginRight: "10px", fontWeight: "bold" }}>
-          Catégories d'actualités
-        </span>
-
-        <Form.Select
-          className="ms-2"
-          style={{ width: "300px", marginRight: "10px" }}
-          value={selectedSportId}
-          onChange={handleSportChange}
-          aria-label="Filtrer par sport"
-        >
-          <option value="">Sélectionnez un sport</option>
-          {newActualite.sports.map((sport) => (
-            <option key={sport.id} value={sport.id}>
-              {sport.nom}
-            </option>
-          ))}
-        </Form.Select>
-
-        <button
-          onClick={handleFilterClick}
-          style={{ padding: "0", border: "none", background: "none" }}
-        >
-          <img
-            src={filtrePic}
-            alt="Filtrer"
-            style={{ width: "40px", height: "40px", marginLeft: "10px" }}
-          />
-        </button>
-
-        <button
-          onClick={handleResetActualities}
-          style={{ padding: "0", border: "none", background: "none" }}
-        >
-          <img
-            src={resetPic}
-            alt="Réinitialiser"
-            style={{ width: "40px", height: "40px", marginLeft: "10px" }}
-          />
-        </button>
-      </div>
       <br />
 
       <div className="d-flex justify-content-end align-items-center mb-4">
@@ -267,18 +195,18 @@ const ActualiteList = ({ currentUser }) => {
       <br />
 
       <div className="row row-cols-1 row-cols-md-4 g-4">
-        {filteredActualitesByTitle.map((actualite) => (
-          <div key={actualite.id} className="col">
+        {filteredCommuniquesByTitle.map((communique) => (
+          <div key={communique.id} className="col">
             <div
               className="card h-100"
-              onClick={() => handleCardClick(actualite.id)}
+              onClick={() => handleCardClick(communique.id)}
               style={{ cursor: "pointer" }}
             >
               <div style={{ position: "relative" }}>
-                {actualite.imageUrl && (
+                {communique.imageUrl && (
                   <img
-                    src={actualite.imageUrl}
-                    alt={actualite.titre}
+                    src={communique.imageUrl}
+                    alt={communique.titre}
                     className="card-img-top"
                   />
                 )}
@@ -292,7 +220,7 @@ const ActualiteList = ({ currentUser }) => {
                   }}
                 >
                   {userRole === "admin" && (
-                    <Link to={`/actualites/edit/${actualite.id}`}>
+                    <Link to={`/communiques/edit/${communique.id}`}>
                       <img
                         src={modifyPic}
                         alt="Modifier"
@@ -305,7 +233,7 @@ const ActualiteList = ({ currentUser }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(actualite.id);
+                        handleDelete(communique.id);
                       }}
                       style={{
                         padding: "0",
@@ -323,16 +251,16 @@ const ActualiteList = ({ currentUser }) => {
                 </div>
               </div>
               <div className="card-body">
-                {actualite.titre && (
-                  <h5 className="card-title fw-bold">{actualite.titre}</h5>
+                {communique.titre && (
+                  <h5 className="card-title fw-bold">{communique.titre}</h5>
                 )}
-                {actualite.sport && actualite.sport.nom && (
-                  <p className="card-text">{actualite.sport.nom}</p>
+                {communique.type && communique.type.nom && (
+                  <p className="card-text">{communique.type.nom}</p>
                 )}
-                {actualite.datePublication && (
+                {communique.datePublication && (
                   <p className="card-text">
                     <small className="text-muted">
-                      Date de publication : {actualite.datePublication}
+                      Date de publication : {communique.datePublication}
                     </small>
                   </p>
                 )}
@@ -346,13 +274,13 @@ const ActualiteList = ({ currentUser }) => {
           <Modal.Title>Ajouter une Actualité</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleAddActualite}>
+          <Form onSubmit={handleAddCommunique}>
             <Form.Group controlId="formTitre">
               <Form.Label>Titre</Form.Label>
               <Form.Control
                 type="text"
                 name="titre"
-                value={newActualite.titre}
+                value={newCommunique.titre}
                 onChange={handleInputChange}
                 required
               />
@@ -363,7 +291,7 @@ const ActualiteList = ({ currentUser }) => {
                 as="textarea"
                 rows={3}
                 name="contenu"
-                value={newActualite.contenu}
+                value={newCommunique.contenu}
                 onChange={handleInputChange}
                 required
               />
@@ -373,27 +301,10 @@ const ActualiteList = ({ currentUser }) => {
               <Form.Control
                 type="date"
                 name="datePublication"
-                value={newActualite.datePublication}
+                value={newCommunique.datePublication}
                 onChange={handleInputChange}
                 required
               />
-            </Form.Group>
-            <Form.Group controlId="formSport">
-              <Form.Label>Sport</Form.Label>
-              <Form.Control
-                as="select"
-                name="sportId"
-                value={newActualite.sportId}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Sélectionnez un sport</option>
-                {newActualite.sports.map((sport) => (
-                  <option key={sport.id} value={sport.id}>
-                    {sport.nom}
-                  </option>
-                ))}
-              </Form.Control>
             </Form.Group>
             <Form.Group controlId="formImage">
               <Form.Label>Image</Form.Label>
@@ -414,4 +325,4 @@ const ActualiteList = ({ currentUser }) => {
   );
 };
 
-export default ActualiteList;
+export default CommuniqueList;

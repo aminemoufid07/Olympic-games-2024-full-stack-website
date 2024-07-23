@@ -40,7 +40,7 @@ const LoginPage = () => {
         await sendPasswordResetEmail(auth, forgotPasswordEmail);
         alert("E-mail de réinitialisation envoyé.");
         setShowForgotPasswordModal(false);
-      } else {
+      } else {  
         setForgotPasswordError("Aucun utilisateur trouvé avec cet e-mail.");
       }
     } catch (error) {

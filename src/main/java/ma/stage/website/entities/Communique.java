@@ -17,36 +17,24 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.TemporalType;
 
 @Entity
-public class Actualite implements Serializable {
+public class Communique implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "sport_id")
-    private Sport sport;
     String titre;
     @Temporal(TemporalType.DATE)
     private Date datePublication;
     @Lob
     @Column(length = 100000)
     String contenu;
-    @ManyToMany
-    private java.util.Collection<Pays> pays;
+
     @Lob
     @Column(length = 100000000)
     private byte[] image;
 
-    public Actualite() {
+    public Communique() {
         super();
-    }
-
-    public Sport getSport() {
-        return sport;
-    }
-
-    public void setSport(Sport sport) {
-        this.sport = sport;
     }
 
     public String getTitre() {
@@ -91,16 +79,8 @@ public class Actualite implements Serializable {
 
     @Override
     public String toString() {
-        return "Actualite [sport=" + sport + ", titre=" + titre + ", datePublication=" + datePublication + ", contenu="
+        return "Communique [ titre=" + titre + ", datePublication=" + datePublication + ", contenu="
                 + contenu + ", image=" + Arrays.toString(image) + "]";
-    }
-
-    public java.util.Collection<Pays> getPays() {
-        return pays;
-    }
-
-    public void setPays(java.util.Collection<Pays> pays) {
-        this.pays = pays;
     }
 
 }

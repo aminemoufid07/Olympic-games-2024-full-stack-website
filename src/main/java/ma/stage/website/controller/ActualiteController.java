@@ -75,9 +75,9 @@ public class ActualiteController {
         return service.create(actualite);
     }
 
-    @GetMapping("/typeId/{typeId}")
-    public List<Actualite> findByType(@PathVariable int typeId) {
-        return service.findByType(typeId);
+    @GetMapping("/sportId/{sportId}")
+    public List<Actualite> findByType(@PathVariable int sportId) {
+        return service.findByType(sportId);
     }
 
     // @GetMapping("/filterByDate")
@@ -89,7 +89,7 @@ public class ActualiteController {
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
         Actualite actualite = actualiteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Actualite not found"));
+                .orElseThrow(()  -> new ResourceNotFoundException("Actualite not found"));
 
         byte[] image = actualite.getImage();
         if (image == null) {
@@ -97,7 +97,7 @@ public class ActualiteController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_PNG); // Changez le type MIME si votre image n'est pas JPEG
+        headers.setContentType(MediaType.IMAGE_PNG); // Changez le sport MIME si votre image n'est pas JPEG
 
         return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
@@ -108,70 +108,70 @@ public class ActualiteController {
     @Autowired
     private ActualiteService actualiteService;
     @Autowired
-    private TypeService typeService;
+    private SportService sportService;
 
-    @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Actualite> addActualite(
-            @RequestParam("titre") String titre,
-            @RequestParam("contenu") String contenu,
-            @RequestParam("typeId") Long typeId,
-            @RequestParam("image") MultipartFile image,
-            @RequestParam("datePublication") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datePublication) {
+        @PostMapping(consumes = "multipart/form-data")
+        public ResponseEntity<Actualite> addActualite(
+                @RequestParam("titre") String titre,
+                @RequestParam("contenu") String contenu,
+                @RequestParam("sportId") Long sportId,
+                @RequestParam("image") MultipartFile image,
+                @RequestParam("datePublication") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datePublication) {
 
-        try {
-            Type type = typeService.getTypeById(typeId);
-            if (type == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
+            try {
+                Sport sport = sportService.getSportById(sportId);
+                if (sport == null) {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
 
-            Actualite actualite = new Actualite();
-            actualite.setTitre(titre);
-            actualite.setContenu(contenu);
-            actualite.setType(type);
-            actualite.setImage(image.getBytes());
-            actualite.setDatePublication(datePublication);
-
-            Actualite savedActualite = actualiteService.saveActualite(actualite);
-            return new ResponseEntity<>(savedActualite, HttpStatus.CREATED);
-
-        } catch (IOException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<Actualite> updateActualite(
-            @PathVariable Long id,
-            @RequestParam("titre") String titre,
-            @RequestParam("contenu") String contenu,
-            @RequestParam("typeId") Long typeId,
-            @RequestParam("image") MultipartFile image,
-            @RequestParam("datePublication") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datePublication) {
-        try {
-            Type type = typeService.getTypeById(typeId);
-            if (type == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-
-            Actualite actualite = actualiteService.findById(id);
-            if (actualite == null) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-
-            actualite.setTitre(titre);
-            actualite.setContenu(contenu);
-            actualite.setType(type);
-            if (image != null && !image.isEmpty()) {
+                Actualite actualite = new Actualite();
+                actualite.setTitre(titre);
+                actualite.setContenu(contenu);
+                actualite.setSport(sport);
                 actualite.setImage(image.getBytes());
+                actualite.setDatePublication(datePublication);
+
+                Actualite savedActualite = actualiteService.saveActualite(actualite);
+                return new ResponseEntity<>(savedActualite, HttpStatus.CREATED);
+
+            } catch (IOException e) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            actualite.setDatePublication(datePublication);
-
-            Actualite updatedActualite = actualiteService.saveActualite(actualite);
-            return new ResponseEntity<>(updatedActualite, HttpStatus.OK);
-
-        } catch (IOException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
 
-}
+        @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+        public ResponseEntity<Actualite> updateActualite(
+                @PathVariable Long id,
+                @RequestParam("titre") String titre,
+                @RequestParam("contenu") String contenu,
+                @RequestParam("sportId") Long sportId,
+                @RequestParam("image") MultipartFile image,
+                @RequestParam("datePublication") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datePublication) {
+            try {
+                Sport sport = sportService.getSportById(sportId);
+                if (sport == null) {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+
+                Actualite actualite = actualiteService.findById(id);
+                if (actualite == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                }
+
+                actualite.setTitre(titre);
+                actualite.setContenu(contenu);
+                actualite.setSport(sport);
+                if (image != null && !image.isEmpty()) {
+                    actualite.setImage(image.getBytes());
+                }
+                actualite.setDatePublication(datePublication);
+
+                Actualite updatedActualite = actualiteService.saveActualite(actualite);
+                return new ResponseEntity<>(updatedActualite, HttpStatus.OK);
+
+            } catch (IOException e) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+    }

@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-const ActualiteDetail = () => {
+const CommuniqueDetail = () => {
   const { id } = useParams();
-  const [actualite, setActualite] = useState(null);
+  const [communique, setCommunique] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8086/api/v1/actualites/${id}`)
+      .get(`http://localhost:8086/api/v1/communiques/${id}`)
       .then((response) => {
-        const actualite = response.data;
-        if (actualite.image) {
+        const communique = response.data;
+        if (communique.image) {
           // Convertir l'image base64 en un Blob
-          const byteCharacters = atob(actualite.image);
+          const byteCharacters = atob(communique.image);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -25,9 +25,9 @@ const ActualiteDetail = () => {
 
           // Créer une URL pour le Blob
           const imageUrl = URL.createObjectURL(blob);
-          setActualite({ ...actualite, imageUrl });
+          setCommunique({ ...communique, imageUrl });
         } else {
-          setActualite(actualite);
+          setCommunique(communique);
         }
         setLoading(false);
       })
@@ -40,12 +40,12 @@ const ActualiteDetail = () => {
   if (loading) return <p className="text-center mt-5">Chargement...</p>;
   if (error)
     return <p className="text-center mt-5">Erreur : {error.message}</p>;
-  if (!actualite)
+  if (!communique)
     return <p className="text-center mt-5">Aucune actualité trouvée</p>;
 
   return (
     <div
-      className="actualite-card"
+      className="communique-card"
       style={{
         padding: "20px",
         backgroundColor: "#fefefe",
@@ -58,9 +58,7 @@ const ActualiteDetail = () => {
         <div className="card shadow-sm">
           <div className="card-body">
             <div className="text-muted mb-3">
-              <h4 className="text-uppercase mb-0">
-                {actualite.sport && actualite.sport.nom}
-              </h4>
+              
             </div>
             <h1
               className="card-title"
@@ -71,9 +69,9 @@ const ActualiteDetail = () => {
                 marginBottom: "10px",
               }}
             >
-              {actualite.titre}
+              {communique.titre}
             </h1>
-            {actualite.datePublication && (
+            {communique.datePublication && (
               <p
                 className="card-subtitle"
                 style={{
@@ -83,15 +81,15 @@ const ActualiteDetail = () => {
                   marginBottom: "20px",
                 }}
               >
-                Publié le : {actualite.datePublication}
+                Publié le : {communique.datePublication}
               </p>
             )}
             <br />
             <br />
-            {actualite.imageUrl && (
+            {communique.imageUrl && (
               <img
-                src={actualite.imageUrl}
-                alt={actualite.titre}
+                src={communique.imageUrl}
+                alt={communique.titre}
                 className="img-fluid rounded mb-4"
               />
             )}
@@ -113,7 +111,7 @@ const ActualiteDetail = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {actualite.contenu}
+              {communique.contenu}
             </p>
           </div>
         </div>
@@ -122,4 +120,4 @@ const ActualiteDetail = () => {
   );
 };
 
-export default ActualiteDetail;
+export default CommuniqueDetail;

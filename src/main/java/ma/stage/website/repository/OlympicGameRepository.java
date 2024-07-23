@@ -1,12 +1,11 @@
 package ma.stage.website.repository;
 
-import ma.stage.website.entities.*;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+import ma.stage.website.entities.OlympicGame;
 
+@Repository
+public interface OlympicGameRepository extends JpaRepository<OlympicGame, Long> {
+	
 }

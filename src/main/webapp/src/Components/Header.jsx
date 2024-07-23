@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo_blanc.png";
+import logo from "../assets/logo-ol.svg";
 import { auth } from "../util/firebase";
 import { useUserRole } from "../util/userRoleContext";
 
@@ -33,17 +33,36 @@ const Header = ({ currentUser }) => {
                 Accueil
               </Link>
             </li>
+            <li className="nav-item ms-4">
+              <Link
+                className="nav-link"
+                to="/athletes"
+                style={{ color: "#FFFFFF" }}
+              >
+                Athletes
+              </Link>
+            </li>
             {userRole === "admin" && (
               <li className="nav-item ms-4">
                 <Link
                   className="nav-link"
-                  to="/types"
+                  to="/sports"
                   style={{ color: "#FFFFFF" }}
                 >
-                  Types
+                  Sports
                 </Link>
               </li>
             )}
+
+            <li className="nav-item ms-4">
+              <Link
+                className="nav-link"
+                to="/pays"
+                style={{ color: "#FFFFFF" }}
+              >
+                Pays
+              </Link>
+            </li>
             <li className="nav-item ms-4">
               <Link
                 className="nav-link"
@@ -53,6 +72,16 @@ const Header = ({ currentUser }) => {
                 Actualités
               </Link>
             </li>
+            <li className="nav-item ms-4">
+              <Link
+                className="nav-link"
+                to="/communiques"
+                style={{ color: "#FFFFFF" }}
+              >
+                Communiques de presse du cnom
+              </Link>
+            </li>
+
             {userRole === "admin" && (
               <li className="nav-item ms-4">
                 <Link
@@ -77,7 +106,11 @@ const Header = ({ currentUser }) => {
           <ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
             <li className="nav-item">
               {currentUser ? (
-                <button style={{ color: "#FFFFFF" }} className="nav-link" onClick={handleSignOut}>
+                <button
+                  style={{ color: "#FFFFFF" }}
+                  className="nav-link"
+                  onClick={handleSignOut}
+                >
                   Se déconnecter
                 </button>
               ) : (

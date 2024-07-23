@@ -53,8 +53,8 @@ public class ActualiteService implements IDao<Actualite> {
 		return null;
 	}
 
-	public List<Actualite> findByType(int typeId) {
-		return actualiteRepository.findByType(typeId);
+	public List<Actualite> findByType(long sportId) {
+		return actualiteRepository.findByType(sportId);
 	}
 
 	public Actualite saveActualite(Actualite actualite) {

@@ -1,38 +1,65 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Modal, Button, Form, Container, Row, Col, Table } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Form,
+  Container,
+  Row,
+  Col,
+  Table,
+} from "react-bootstrap";
 import modifyPic from "../../assets/bouton-modifier.png";
 import deletePic from "../../assets/supprimer.png";
 import addPic from "../../assets/stylo.png";
 
-const TypeList = () => {
-  const [types, setTypes] = useState([]);
+const PaysList = () => {
+  const [pays, setPays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
-  const [newType, setNewType] = useState(""); // État pour le nouveau type
-  const [formError, setFormError] = useState(""); // État pour le message d'erreur du formulaire
-  const [editMode, setEditMode] = useState(false); // État pour mode d'édition
-  const [currentTypeId, setCurrentTypeId] = useState(null); // État pour l'ID du type actuel
+  const [newPays, setNewPays] = useState({ nom: "", image: null });
+  const [formError, setFormError] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [currentPaysId, setCurrentPaysId] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8086/api/v1/types")
-      .then((response) => {
-        setTypes(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      });
+    fetchPays();
   }, []);
+
+  const fetchPays = async () => {
+    try {
+      let url = "http://localhost:8086/api/v1/pays";
+
+      const response = await axios.get(url);
+
+      const paysWithImageUrls = response.data.map((pays) => {
+        if (pays.image) {
+          const byteCharacters = atob(pays.image);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: "image/jpeg" });
+          const imageUrl = URL.createObjectURL(blob);
+          return { ...pays, imageUrl };
+        }
+        return pays;
+      });
+      setPays(paysWithImageUrls);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
+  };
 
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:8086/api/v1/types/${id}`)
+      .delete(`http://localhost:8086/api/v1/pays/${id}`)
       .then(() => {
-        setTypes(types.filter((type) => type.id !== id)); // Supprimer le type de la liste des types
+        setPays(pays.filter((pays) => pays.id !== id));
       })
       .catch((error) => {
         setError(error);
@@ -40,47 +67,45 @@ const TypeList = () => {
   };
 
   const handleEdit = (id) => {
-    const type = types.find((type) => type.id === id);
-    setCurrentTypeId(id);
-    setNewType(type.nom);
+    const selectedPays = pays.find((pays) => pays.id === id);
+    setCurrentPaysId(id);
+    setNewPays({ nom: selectedPays.nom, image: selectedPays.image });
     setEditMode(true);
     setShow(true);
   };
 
   const handleAddOrUpdate = () => {
-    if (!newType) {
+    if (!newPays.nom) {
       setFormError("Le champ nom ne peut pas être vide");
       return;
     }
 
+    const formData = new FormData();
+    formData.append("nom", newPays.nom);
+    if (newPays.image) {
+      formData.append("image", newPays.image);
+    }
+
     if (editMode) {
       axios
-        .put(`http://localhost:8086/api/v1/types/${currentTypeId}`, {
-          nom: newType,
-        })
+        .put(`http://localhost:8086/api/v1/pays/${currentPaysId}`, formData)
         .then((response) => {
-          setTypes(
-            types.map((type) =>
-              type.id === currentTypeId ? response.data : type
+          setPays(
+            pays.map((pays) =>
+              pays.id === currentPaysId ? response.data : pays
             )
           );
-          setNewType("");
-          setShow(false);
-          setFormError("");
-          setEditMode(false);
-          setCurrentTypeId(null);
+          resetForm();
         })
         .catch((error) => {
           setError(error);
         });
     } else {
       axios
-        .post("http://localhost:8086/api/v1/types", { nom: newType })
+        .post("http://localhost:8086/api/v1/pays", formData)
         .then((response) => {
-          setTypes([...types, response.data]); // Ajouter le nouveau type à la liste des types
-          setNewType(""); // Réinitialiser le champ du nouveau type
-          setShow(false); // Fermer le modal
-          setFormError(""); // Réinitialiser le message d'erreur
+          setPays([...pays, response.data]);
+          resetForm();
         })
         .catch((error) => {
           setError(error);
@@ -95,17 +120,27 @@ const TypeList = () => {
   };
 
   const handleClose = () => {
-    setShow(false);
-    setEditMode(false);
-    setCurrentTypeId(null);
-    setNewType("");
-    setFormError("");
+    resetForm();
   };
 
   const handleShow = () => {
-    setNewType(""); // Réinitialiser le champ du nouveau type
-    setFormError(""); // Réinitialiser le message d'erreur
+    resetForm();
     setShow(true);
+  };
+
+  const handleImageChange = (e) => {
+    setNewPays((prevState) => ({
+      ...prevState,
+      image: e.target.files[0],
+    }));
+  };
+
+  const resetForm = () => {
+    setShow(false);
+    setEditMode(false);
+    setCurrentPaysId(null);
+    setNewPays({ nom: "", image: null });
+    setFormError("");
   };
 
   if (loading) return <p>Chargement...</p>;
@@ -121,11 +156,14 @@ const TypeList = () => {
         .table {
           margin-top: 20px;
         }
-        .table th, .table td {
-          text-align: center;
+        .table th,
+        .table td { 
+          text-align: center;   
         }
         .table img {
-          cursor: pointer;
+          width: 64px;
+          height: 64px;
+          object-fit: contain;
         }
         .modal-title {
           color: #007bff;
@@ -142,7 +180,7 @@ const TypeList = () => {
       <Row className="my-4">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
-            <h1>Liste des Types</h1>
+            <h1>Liste des Pays</h1>
             <Button variant="outline-primary" onClick={handleShow}>
               <img
                 src={addPic}
@@ -160,18 +198,21 @@ const TypeList = () => {
             <thead>
               <tr>
                 <th>Nom</th>
+                <th>Drapeau</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {types.map((type) => (
-                <tr key={type.id}>
-                  <td>{type.nom}</td>
+              {pays.map((pays) => (
+                <tr key={pays.id}>
+                  <td>{pays.nom}</td>
                   <td>
-                    <Button
-                      variant="link"
-                      onClick={() => handleEdit(type.id)}
-                    >
+                    {pays.imageUrl && (
+                      <img src={pays.imageUrl} style={{ size: "128px" }} />
+                    )}
+                  </td>
+                  <td>
+                    <Button variant="link" onClick={() => handleEdit(pays.id)}>
                       <img
                         src={modifyPic}
                         alt="Modifier"
@@ -180,7 +221,7 @@ const TypeList = () => {
                     </Button>
                     <Button
                       variant="link"
-                      onClick={() => handleDelete(type.id)}
+                      onClick={() => handleDelete(pays.id)}
                     >
                       <img
                         src={deletePic}
@@ -199,22 +240,35 @@ const TypeList = () => {
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {editMode ? "Modifier le type" : "Ajouter un nouveau type"}
+            {editMode ? "Modifier le pays" : "Ajouter un nouveau pays"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Label>Nom du type</Form.Label>
+              <Form.Label>Nom du pays</Form.Label>
               <Form.Control
                 type="text"
-                value={newType}
-                onChange={(e) => setNewType(e.target.value)}
+                value={newPays.nom}
+                onChange={(e) =>
+                  setNewPays((prevState) => ({
+                    ...prevState,
+                    nom: e.target.value,
+                  }))
+                }
                 onKeyPress={handleKeyPress}
-                placeholder="Entrer le nom du type"
+                placeholder="Nom"
               />
-              {formError && <p className="text-danger">{formError}</p>}
             </Form.Group>
+            <Form.Group>
+              <Form.Label>Drapeau</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+              />
+            </Form.Group>
+            {formError && <p style={{ color: "red" }}>{formError}</p>}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -230,4 +284,4 @@ const TypeList = () => {
   );
 };
 
-export default TypeList;
+export default PaysList;
