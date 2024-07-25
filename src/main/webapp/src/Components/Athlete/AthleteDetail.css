@@ -1,0 +1,53 @@
+.athlete-detail-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .athlete-detail {
+    display: flex;
+    align-items: center;
+  }
+  
+  .athlete-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+  
+  .athlete-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .athlete-country,
+  .athlete-sport {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+  }
+  
+  .athlete-country img,
+  .athlete-sport img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+  .athlete-stats {
+    margin-top: 20px;
+  }
+  
+  .medal-icons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .medal-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+  }
+  

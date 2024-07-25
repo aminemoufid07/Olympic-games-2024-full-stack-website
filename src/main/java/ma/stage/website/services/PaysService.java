@@ -3,7 +3,6 @@ package ma.stage.website.services;
 import ma.stage.website.idao.IDao;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,9 +52,10 @@ public class PaysService implements IDao<Pays> {
 	public Pays findById(long id) {
 		return null;
 	}
+
 	// public Optional<Pays> getPaysById(Long id) {
-    //     return paysRepository.findById(id);
-    // }
+	// return paysRepository.findById(id);
+	// }
 	public Pays savePays(Pays pays) {
 		return paysRepository.save(pays);
 	}
@@ -63,8 +63,20 @@ public class PaysService implements IDao<Pays> {
 	public List<Pays> getAllPayss() {
 		return paysRepository.findAll();
 	}
+
 	public Pays getPaysById(Long id) {
 		return paysRepository.findById(id).orElse(null);
 	}
 
+	public void deleteAllPays() {
+		paysRepository.deleteAll();
+	}
+
+	public boolean existsByNom(String nom) {
+		return paysRepository.existsByNom(nom);
+	}
+
+	public void save(Pays pays) {
+		paysRepository.save(pays);
+	}
 }

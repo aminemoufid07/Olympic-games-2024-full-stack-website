@@ -58,4 +58,15 @@ public class SportService implements IDao<Sport> {
 		return sportRepository.findById(id).orElse(null);
 	}
 
+	public void save(Sport sport) {
+		sportRepository.save(sport);
+	}
+
+	public void deleteAllSports() {
+		sportRepository.deleteAll();
+	}
+
+	public boolean existsByNom(String nom) {
+		return sportRepository.existsByNom(nom);
+	}
 }

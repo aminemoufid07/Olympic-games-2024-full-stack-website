@@ -1,8 +1,8 @@
 package ma.stage.website.controller;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
+import java.sql.Date; // Add this import
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,7 +24,7 @@ import ma.stage.website.repository.AthleteRepository;
 import ma.stage.website.services.*;
 
 @RestController
-@RequestMapping("/api/v1/athlete")
+@RequestMapping("/api/v1/athletes")
 public class AthleteController {
     @Autowired
     private AthleteService service;
@@ -75,85 +75,95 @@ public class AthleteController {
         return service.create(athlete);
     }
 
-    // @Autowired
-    // private AthleteRepository athleteRepository;
+    @Autowired
+    private AthleteRepository athleteRepository;
 
-    // @Autowired
-    // private AthleteService athleteService;
-    // @Autowired
-    // private SportService sportService;
-    // @Autowired
-    // private PaysService paysService;
+    @Autowired
+    private AthleteService athleteService;
+    @Autowired
+    private SportService sportService;
+    @Autowired
+    private PaysService paysService;
 
-    // @PostMapping(consumes = "multipart/form-data")
-    // public ResponseEntity<Athlete> addAthlete(
-    // @RequestParam("nom") String nom,
-    // @RequestParam("prenom") String prenom,
-    // @RequestParam("sportId") Long sportId,
-    // @RequestParam("paysId") Long paysId,
-    // @RequestParam("photo") MultipartFile photo,
-    // @RequestParam("medaille") String medaille,
-    // @RequestParam("dateDeNaissance") @DateTimeFormat(iso =
-    // DateTimeFormat.ISO.DATE) Date dateDeNaissance)
-    // {
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<Athlete> addAthlete(
+            @RequestParam("nom") String nom,
+            @RequestParam("prenom") String prenom,
+            @RequestParam("sportId") Long sportId,
+            @RequestParam("paysId") Long paysId,
+            @RequestParam("photo") MultipartFile photo,
+            @RequestParam("medaille") String medaille,
+            @RequestParam("dateDeNaissance") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.util.Date dateDeNaissance) {
 
-    // try {
-    // Sport sport = sportService.getSportById(sportId);
-    // Pays pays = paysService.getPaysById(paysId);
-    // if (sport == null || pays == null) {
-    // return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    // }
+        try {
+            Sport sport = sportService.getSportById(sportId);
+            Pays pays = paysService.getPaysById(paysId);
+            if (sport == null || pays == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
 
-    // Athlete athlete = new Athlete();
-    // athlete.setNom(nom);
-    // athlete.setPrenom(prenom);
-    // athlete.setSport(sport);
-    // athlete.setPays(pays);
-    // athlete.setPhoto(photo.getBytes());
-    // // athlete.setDateDeNaissance(dateDeNaissance);
+            Athlete athlete = new Athlete();
+            athlete.setNom(nom);
+            athlete.setPrenom(prenom);
+            athlete.setSport(sport);
+            athlete.setPays(pays);
+            athlete.setPhoto(photo.getBytes());
+            athlete.setDateDeNaissance(new java.sql.Date(dateDeNaissance.getTime())); // Conversion here
 
-    // Athlete savedAthlete = athleteService.saveAthlete(athlete);
-    // return new ResponseEntity<>(savedAthlete, HttpStatus.CREATED);
+            Athlete savedAthlete = athleteService.saveAthlete(athlete);
+            return new ResponseEntity<>(savedAthlete, HttpStatus.CREATED);
 
-    // } catch (IOException e) {
-    // return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-    // }
+        } catch (IOException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-    // @PutMapping(value = "/{id}", consumes = "multipart/form-data")
-    // public ResponseEntity<Athlete> updateAthlete(
-    // @PathVariable Long id,
-    // @RequestParam("titre") String titre,
-    // @RequestParam("contenu") String contenu,
-    // @RequestParam("sportId") Long sportId,
-    // @RequestParam("image") MultipartFile image,
-    // @RequestParam("datePublication") @DateTimeFormat(iso =
-    // DateTimeFormat.ISO.DATE) Date datePublication) {
-    // try {
-    // Sport sport = sportService.getSportById(sportId);
-    // if (sport == null) {
-    // return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    // }
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<Athlete> updateAthlete(
+            @PathVariable Long id,
+            @RequestParam("nom") String nom,
+            @RequestParam("prenom") String prenom,
+            @RequestParam("sportId") Long sportId,
+            @RequestParam("paysId") Long paysId,
+            @RequestParam("photo") MultipartFile photo,
+            @RequestParam("medaille") String medaille,
+            @RequestParam("dateDeNaissance") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.util.Date dateDeNaissance) {
+        try {
+            Sport sport = sportService.getSportById(sportId);
+            Pays pays = paysService.getPaysById(paysId);
+            if (sport == null || pays == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
 
-    // Athlete athlete = athleteService.findById(id);
-    // if (athlete == null) {
-    // return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-    // }
+            Athlete athlete = athleteService.findById(id);
+            if (athlete == null) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
 
-    // athlete.setTitre(titre);
-    // athlete.setContenu(contenu);
-    // athlete.setSport(sport);
-    // if (image != null && !image.isEmpty()) {
-    // athlete.setImage(image.getBytes());
-    // }
-    // athlete.setDatePublication(datePublication);
+            athlete.setNom(nom);
+            athlete.setPrenom(prenom);
+            athlete.setSport(sport);
+            athlete.setPays(pays);
+            athlete.setMedaille(medaille);
+            if (photo != null && !photo.isEmpty()) {
+                athlete.setPhoto(photo.getBytes());
+            }
+            athlete.setDateDeNaissance(new java.sql.Date(dateDeNaissance.getTime())); // Conversion here
 
-    // Athlete updatedAthlete = athleteService.saveAthlete(athlete);
-    // return new ResponseEntity<>(updatedAthlete, HttpStatus.OK);
+            Athlete updatedAthlete = athleteService.saveAthlete(athlete);
+            return new ResponseEntity<>(updatedAthlete, HttpStatus.OK);
 
-    // } catch (IOException e) {
-    // return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-    // }
+        } catch (IOException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/filter")
+    public List<Athlete> filterAthletes(
+            @RequestParam(required = false) Long sportId,
+            @RequestParam(required = false) Long paysId,
+            @RequestParam(required = false) String search) {
+        return athleteService.filterAthletes(sportId, paysId, search);
+    }
 
 }

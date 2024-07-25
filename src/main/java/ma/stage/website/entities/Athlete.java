@@ -69,9 +69,7 @@ public class Athlete {
     public Date getDateDeNaissance() {
         return dateDeNaissance;
     }
-    public void setDateDeNaissance(Date dateDeNaissance) {
-        this.dateDeNaissance = dateDeNaissance;
-    }
+   
     public Pays getPays() {
         return pays;
     }
@@ -95,6 +93,9 @@ public class Athlete {
     }
     public void setMedaille(String medaille) {
         this.medaille = medaille;
+    }
+    public void setDateDeNaissance(Date dateDeNaissance) {
+        this.dateDeNaissance = dateDeNaissance;
     }
 
     

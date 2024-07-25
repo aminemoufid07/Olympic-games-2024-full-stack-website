@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Modal,
-  Button,
-  Form,
-  Container,
-  Row,
-  Col,
-  Table,
-} from "react-bootstrap";
+import { Modal, Button, Form, Container, Row, Col, Card } from "react-bootstrap";
 import modifyPic from "../../assets/bouton-modifier.png";
 import deletePic from "../../assets/supprimer.png";
 import addPic from "../../assets/stylo.png";
@@ -30,9 +22,7 @@ const PaysList = () => {
   const fetchPays = async () => {
     try {
       let url = "http://localhost:8086/api/v1/pays";
-
       const response = await axios.get(url);
-
       const paysWithImageUrls = response.data.map((pays) => {
         if (pays.image) {
           const byteCharacters = atob(pays.image);
@@ -83,7 +73,7 @@ const PaysList = () => {
     const formData = new FormData();
     formData.append("nom", newPays.nom);
     if (newPays.image) {
-      formData.append("image", newPays.image);
+      formData.append("image", newPays.imageUrl);
     }
 
     if (editMode) {
@@ -153,16 +143,18 @@ const PaysList = () => {
           font-size: 2rem;
           color: #333;
         }
-        .table {
-          margin-top: 20px;
+        .card-deck {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+          justify-content: center;
         }
-        .table th,
-        .table td { 
-          text-align: center;   
+        .card {
+          width: 150px;
         }
-        .table img {
-          width: 64px;
-          height: 64px;
+        .card img {
+          width: 100%;
+          height: 100px;
           object-fit: contain;
         }
         .modal-title {
@@ -181,59 +173,48 @@ const PaysList = () => {
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h1>Liste des Pays</h1>
-            <Button variant="outline-primary" onClick={handleShow}>
+            {/* <Button variant="outline-primary" onClick={handleShow}>
               <img
                 src={addPic}
                 alt="Ajouter"
                 style={{ width: "30px", height: "30px" }}
               />
-            </Button>
+            </Button> */}
           </div>
         </Col>
       </Row>
 
       <Row>
         <Col>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Nom</th>
-                <th>Drapeau</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pays.map((pays) => (
-                <tr key={pays.id}>
-                  <td>{pays.nom}</td>
-                  <td>
-                    {pays.imageUrl && (
-                      <img src={pays.imageUrl} style={{ size: "128px" }} />
-                    )}
-                  </td>
-                  <td>
-                    <Button variant="link" onClick={() => handleEdit(pays.id)}>
-                      <img
-                        src={modifyPic}
-                        alt="Modifier"
-                        style={{ width: "30px", height: "30px" }}
-                      />
-                    </Button>
-                    <Button
-                      variant="link"
-                      onClick={() => handleDelete(pays.id)}
-                    >
-                      <img
-                        src={deletePic}
-                        alt="Supprimer"
-                        style={{ width: "30px", height: "30px" }}
-                      />
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <div className="card-deck">
+            {pays.map((pays) => (
+              <Card key={pays.id}>
+                <Card.Img variant="top" src={pays.imageUrl} />
+                <Card.Body>
+                  <Card.Title>{pays.nom}</Card.Title>
+                </Card.Body>
+                {/* <Card.Footer>
+                  <Button variant="link" onClick={() => handleEdit(pays.id)}>
+                    <img
+                      src={modifyPic}
+                      alt="Modifier"
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </Button>
+                  <Button
+                    variant="link"
+                    onClick={() => handleDelete(pays.id)}
+                  >
+                    <img
+                      src={deletePic}
+                      alt="Supprimer"
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </Button>
+                </Card.Footer> */}
+              </Card>
+            ))}
+          </div>
         </Col>
       </Row>
 
@@ -280,7 +261,15 @@ const PaysList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <Row>
+        <Col>
+        <div>
+        <div style={{ height: "100px" }}></div>
+        </div>
+        </Col>
+    </Row>
     </Container>
+     
   );
 };
 

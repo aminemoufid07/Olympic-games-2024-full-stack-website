@@ -1,132 +1,107 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { IonIcon } from "react-ion-icon";
 import logo from "../assets/logo-ol.svg";
 import { auth } from "../util/firebase";
 import { useUserRole } from "../util/userRoleContext";
 
 const Header = ({ currentUser }) => {
   const userRole = useUserRole();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleSignOut = () => {
     auth.signOut();
   };
 
+  const onToggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
-    <nav
-      className="navbar navbar-expand-lg"
-      style={{
-        backgroundColor: "#61B4E6",
-        fontFamily: "'Open Sans', serif",
-        fontSize: "20px",
-        color: "#FFFFFF",
-        lineHeight: "40.1px",
-      }}
-    >
-      <div className="container-fluid">
-        <Link className="navbar-brand me-10" to="/">
-          <img src={logo} alt="Logo" width="100" height="80" />
-        </Link>
-        <div className="collapse navbar-collapse">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-5">
-            <li className="nav-item">
-              <Link className="nav-link" to="/" style={{ color: "#FFFFFF" }}>
+    <header className="bg-white">
+   
+      <nav className="flex justify-between items-center w-[92%] mx-auto py-4">
+        <div>
+          <Link to="/">
+            <img className="w-16 cursor-pointer" src={logo} alt="Logo" />
+          </Link>
+        </div>
+        <div
+          className={`nav-links duration-500 md:static absolute bg-white md:min-h-fit min-h-[60vh] left-0 ${
+            menuOpen ? "top-[9%]" : "top-[-100%]"
+          } md:w-auto w-full flex items-center px-5`}
+        >
+          <ul className="flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-8">
+            <li>
+              <Link className="hover:text-gray-500" to="/">
                 Accueil
               </Link>
             </li>
-            <li className="nav-item ms-4">
-              <Link
-                className="nav-link"
-                to="/athletes"
-                style={{ color: "#FFFFFF" }}
-              >
+            <li>
+              <Link className="hover:text-gray-500" to="/athletes">
                 Athletes
               </Link>
             </li>
             {userRole === "admin" && (
-              <li className="nav-item ms-4">
-                <Link
-                  className="nav-link"
-                  to="/sports"
-                  style={{ color: "#FFFFFF" }}
-                >
+              <li>
+                <Link className="hover:text-gray-500" to="/sports">
                   Sports
                 </Link>
               </li>
             )}
-
-            <li className="nav-item ms-4">
-              <Link
-                className="nav-link"
-                to="/pays"
-                style={{ color: "#FFFFFF" }}
-              >
+            <li>
+              <Link className="hover:text-gray-500" to="/pays">
                 Pays
               </Link>
             </li>
-            <li className="nav-item ms-4">
-              <Link
-                className="nav-link"
-                to="/actualites"
-                style={{ color: "#FFFFFF" }}
-              >
+            <li>
+              <Link className="hover:text-gray-500" to="/actualites">
                 Actualités
               </Link>
             </li>
-            <li className="nav-item ms-4">
-              <Link
-                className="nav-link"
-                to="/communiques"
-                style={{ color: "#FFFFFF" }}
-              >
+            <li>
+              <Link className="hover:text-gray-500" to="/communiques">
                 Communiques de presse du cnom
               </Link>
             </li>
-
+            <li>
+              <Link className="hover:text-gray-500" to="/olympicGames">
+                Events
+              </Link>
+            </li>
             {userRole === "admin" && (
-              <li className="nav-item ms-4">
-                <Link
-                  className="nav-link"
-                  to="/userManagement"
-                  style={{ color: "#FFFFFF" }}
-                >
+              <li>
+                <Link className="hover:text-gray-500" to="/userManagement">
                   Gestion d'utilisateurs
                 </Link>
               </li>
             )}
           </ul>
-          {/* <li className="nav-item ms-4">
-                <Link
-                  className="nav-link"
-                  to="/Events"
-                  style={{ color: "#FFFFFF" }}
-                >
-                  Events
-                </Link>
-              </li> */}
-          <ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
-            <li className="nav-item">
-              {currentUser ? (
-                <button
-                  style={{ color: "#FFFFFF" }}
-                  className="nav-link"
-                  onClick={handleSignOut}
-                >
-                  Se déconnecter
-                </button>
-              ) : (
-                <Link
-                  className="nav-link"
-                  to="/compte"
-                  style={{ color: "#FFFFFF" }}
-                >
-                  Se connecter
-                </Link>
-              )}
-            </li>
-          </ul>
         </div>
-      </div>
-    </nav>
+        <div className="flex items-center gap-6">
+          {currentUser ? (
+            <button
+              className="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]"
+              onClick={handleSignOut}
+            >
+              Se déconnecter
+            </button>
+          ) : (
+            <Link
+              className="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]"
+              to="/compte"
+            >
+              Se connecter
+            </Link>
+          )}
+          <IonIcon
+            name={menuOpen ? "close" : "menu"}
+            className="text-3xl cursor-pointer md:hidden"
+            onClick={onToggleMenu}
+          />
+        </div>
+      </nav>
+    </header>
   );
 };
 

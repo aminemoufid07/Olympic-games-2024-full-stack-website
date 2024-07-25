@@ -22,6 +22,9 @@ public class Pays {
     @Lob
     @Column(length = 100000000)
     private byte[] image;
+    private String imageUrl;
+
+    
 
     public Pays() {
     }
@@ -64,6 +67,19 @@ public class Pays {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Pays(String nom, String imageUrl) {
+        this.nom = nom;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }

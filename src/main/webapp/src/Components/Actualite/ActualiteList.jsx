@@ -46,7 +46,7 @@ const ActualiteList = ({ currentUser }) => {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
           }
           const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { sport: "image/jpeg" });
+          const blob = new Blob([byteArray], { type: "image/jpeg" });
           const imageUrl = URL.createObjectURL(blob);
           return { ...actualite, imageUrl };
         }
@@ -183,7 +183,7 @@ const ActualiteList = ({ currentUser }) => {
         <h1 className="my-4">Actualités</h1>
         {searchVisible && (
           <input
-            sport="text"
+            type="text"
             className="form-control ms-auto"
             style={{ width: "200px" }}
             placeholder="Rechercher par titre..."

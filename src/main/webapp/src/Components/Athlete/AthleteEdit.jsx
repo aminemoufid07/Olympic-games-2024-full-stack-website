@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-
+import "./AthleteEdit.css"; // Assurez-vous d'ajouter les styles nécessaires
+import goldPic from "../../assets/gold.png";
+import silverPic from "../../assets/silver.png";
+import bronzePic from "../../assets/bronze.png";
 const AthleteEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -24,7 +27,9 @@ const AthleteEdit = () => {
   useEffect(() => {
     const fetchAthlete = async () => {
       try {
-        const response = await axios.get(`http://localhost:8086/api/v1/athletes/${id}`);
+        const response = await axios.get(
+          `http://localhost:8086/api/v1/athletes/${id}`
+        );
         const data = response.data;
         setAthlete({
           prenom: data.prenom,
@@ -103,7 +108,8 @@ const AthleteEdit = () => {
       !athlete.sexe ||
       !athlete.dateDeNaissance ||
       !athlete.paysId ||
-      !athlete.sportId
+      !athlete.sportId ||
+      !athlete.medaille
     ) {
       setFormError("Tous les champs sont obligatoires.");
       return;
@@ -133,6 +139,51 @@ const AthleteEdit = () => {
       .catch((error) => {
         setError(error);
       });
+  };
+
+  const renderMedals = (medalString) => {
+    if (!medalString) return null;
+
+    const [gold, silver, bronze] = medalString.split("/").map((medal) => {
+      const count = medal.slice(0, -1);
+      const type = medal.slice(-1);
+      return { count: parseInt(count), type };
+    });
+
+    const medalIcons = {
+      G: "gold-medal.png",
+      S: "silver-medal.png",
+      B: "bronze-medal.png",
+    };
+
+    return (
+      <div className="medal-icons">
+        {Array.from({ length: gold.count }).map((_, index) => (
+          <img
+            key={`gold-${index}`}
+            src={goldPic}
+            alt="Gold Medal"
+            className="medal-icon"
+          />
+        ))}
+        {Array.from({ length: silver.count }).map((_, index) => (
+          <img
+            key={`silver-${index}`}
+            src={silverPic}
+            alt="Silver Medal"
+            className="medal-icon"
+          />
+        ))}
+        {Array.from({ length: bronze.count }).map((_, index) => (
+          <img
+            key={`bronze-${index}`}
+            src={bronzePic}
+            alt="Bronze Medal"
+            className="medal-icon"
+          />
+        ))}
+      </div>
+    );
   };
 
   if (loading) return <p>Chargement...</p>;
@@ -244,6 +295,7 @@ const AthleteEdit = () => {
           <label htmlFor="medaille" className="form-label">
             Médaille
           </label>
+          <div className="medal-container">{athlete.medaille}</div>
           <input
             type="text"
             className="form-control"

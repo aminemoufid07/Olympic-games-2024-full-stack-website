@@ -10,9 +10,12 @@ import CommuniqueList from "./Components/Communique/CommuniqueList";
 import CommuniqueDetail from "./Components/Communique/CommuniqueDetail";
 import CommuniqueEdit from "./Components/Communique/CommuniqueEdit";
 import AthleteList from "./Components/Athlete/AthleteList";
-import PaysList from "./Components/Pays/PaysList";
 import AthleteDetail from "./Components/Athlete/AthleteDetail";
 import AthleteEdit from "./Components/Athlete/AthleteEdit";
+import OlympicGameList from "./Components/OlympicGame/OlympicGameList";
+import PaysList from "./Components/Pays/PaysList";
+// import OlympicGameDetail from "./Components/OlympicGame/OlympicGameDetail";
+// import OlympicGameEdit from "./Components/OlympicGame/OlympicGameEdit";
 import ActualiteEdit from "./Components/Actualite/ActualiteEdit";
 import LoginPage from "./Components/Authentification/LoginPage.jsx";
 import SignUpPage from "./Components/Authentification/SignUpPage.jsx";
@@ -22,6 +25,7 @@ import { auth, db } from "./util/firebase"; // Assurez-vous que db est correctem
 import { doc, getDoc } from "firebase/firestore";
 import { UserRoleProvider } from "./util/userRoleContext.jsx";
 import SportList from "./Components/Sport/SportList.jsx";
+import SportDetail from "./Components/Sport/SportDetail.jsx";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -66,12 +70,13 @@ function App() {
           <main style={{ minHeight: "80vh" }}>
             <Routes>
               <Route path="/" element={<ActualiteList />} />
-              <Route
+              {/* <Route
                 path="/sports"
                 element={<PrivateRoute allowedRoles={["admin"]} />}
-              >
-                <Route path="/sports" element={<SportList />} />
-              </Route>
+              > */}
+              <Route path="/sports" element={<SportList />} />
+              {/* </Route> */}
+              <Route path="/sports/:id" element={<SportDetail />} />
               <Route
                 path="/pays"
                 element={<PrivateRoute allowedRoles={["admin"]} />}
@@ -96,6 +101,12 @@ function App() {
                 path="/communiques/edit/:id"
                 element={<CommuniqueEdit />}
               />
+              <Route path="/olympicGames" element={<OlympicGameList />} />
+              {/* <Route path="/olympicGames/:id" element={<OlympicGameDetail />} />
+              <Route
+                path="/olympicGames/edit/:id"
+                element={<OlympicGameEdit />}
+              /> */}
               <Route path="/athletes" element={<AthleteList />} />
               <Route path="/athletes/:id" element={<AthleteDetail />} />
               <Route path="/athletes/edit/:id" element={<AthleteEdit />} />

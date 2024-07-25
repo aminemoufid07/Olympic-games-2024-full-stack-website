@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import "./AthleteDetail.css";
+import goldPic from "../../assets/gold.png";
+import silverPic from "../../assets/silver.png";
+import bronzePic from "../../assets/bronze.png";
 
 const AthleteDetail = () => {
   const { id } = useParams();
@@ -13,9 +17,9 @@ const AthleteDetail = () => {
       .get(`http://localhost:8086/api/v1/athletes/${id}`)
       .then((response) => {
         const athlete = response.data;
-        if (athlete.image) {
-          // Convertir l'image base64 en un Blob
-          const byteCharacters = atob(athlete.image);
+        if (athlete.photo) {
+          // Convert base64 image to a Blob
+          const byteCharacters = atob(athlete.photo);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -23,7 +27,7 @@ const AthleteDetail = () => {
           const byteArray = new Uint8Array(byteNumbers);
           const blob = new Blob([byteArray], { type: "image/jpeg" });
 
-          // Créer une URL pour le Blob
+          // Create a URL for the Blob
           const imageUrl = URL.createObjectURL(blob);
           setAthlete({ ...athlete, imageUrl });
         } else {
@@ -37,6 +41,50 @@ const AthleteDetail = () => {
       });
   }, [id]);
 
+  const renderMedals = (medalString) => {
+    if (!medalString) return null; // Return null if medalString is undefined or null
+  
+    const [gold, silver, bronze] = medalString.split('/').map(medal => {
+      const count = medal.slice(0, -1);
+      const type = medal.slice(-1);
+      return { count: parseInt(count), type };
+    });
+  
+    const medalIcons = {
+      G: "gold-medal.png",
+      S: "silver-medal.png",
+      B: "bronze-medal.png"
+    };
+    return (
+      <div className="medal-icons">
+        {Array.from({ length: gold.count }).map((_, index) => (
+          <img
+            key={`gold-${index}`}
+            src={goldPic}
+            alt="Gold Medal"
+            className="medal-icon"
+          />
+        ))}
+        {Array.from({ length: silver.count }).map((_, index) => (
+          <img
+            key={`silver-${index}`}
+            src={silverPic}
+            alt="Silver Medal"
+            className="medal-icon"
+          />
+        ))}
+        {Array.from({ length: bronze.count }).map((_, index) => (
+          <img
+            key={`bronze-${index}`}
+            src={bronzePic}
+            alt="Bronze Medal"
+            className="medal-icon"
+          />
+        ))}
+      </div>
+    );
+  };
+
   if (loading) return <p className="text-center mt-5">Chargement...</p>;
   if (error)
     return <p className="text-center mt-5">Erreur : {error.message}</p>;
@@ -44,75 +92,41 @@ const AthleteDetail = () => {
     return <p className="text-center mt-5">Aucune actualité trouvée</p>;
 
   return (
-    <div
-      className="athlete-card"
-      style={{
-        padding: "20px",
-        backgroundColor: "#fefefe",
-        borderRadius: "10px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-        marginBottom: "30px",
-      }}
-    >
-      <div className="container py-4">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <div className="text-muted mb-3">
-              
+    <div className="athlete-detail-container">
+      <div className="athlete-detail">
+        <img
+          src={athlete.imageUrl}
+          
+          className="athlete-photo"
+        />
+        <div className="athlete-info">
+          <h1>
+            {athlete.prenom} {athlete.nom}
+          </h1>
+          <div className="athlete-country">
+            <img src={athlete.pays.imageUrl} alt={athlete.pays.nom} />
+            <span>{athlete.pays.nom}</span>
+          </div>
+          <div className="athlete-sport">
+            <span>{athlete.sport.nom}</span>
+          </div>
+          <div className="athlete-stats">
+            <div>
+              <span>Olympic Medals</span>
+              {renderMedals(athlete.medaille)}
             </div>
-            <h1
-              className="card-title"
-              style={{
-                fontFamily: "Georgia, serif",
-                fontSize: "2rem",
-                color: "#333",
-                marginBottom: "10px",
-              }}
-            >
-              {athlete.titre}
-            </h1>
-            {athlete.sport.nom && (
-              <p
-                className="card-subtitle"
-                style={{
-                  fontFamily: "Arial, sans-serif",
-                  fontSize: "1rem",
-                  color: "#666",
-                  marginBottom: "20px",
-                }}
-              >
-                Publié le : {athlete.pays.nom}
-              </p>
-            )}
-            <br />
-            <br />
-            {athlete.imageUrl && (
-              <img
-                src={athlete.imageUrl}
-                alt={athlete.nom}
-                className="img-fluid rounded mb-4"
-              />
-            )}
-
-            <br />
-            <br />
-
-            <p
-              className="card-text"
-              style={{
-                fontFamily: "Georgia, serif",
-                fontSize: "1.1rem",
-                lineHeight: "1.75",
-                color: "#333",
-                backgroundColor: "#f9f9f9",
-                padding: "10px 15px",
-                borderRadius: "8px",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                whiteSpace: "pre-line",
-              }}
-            >
-              {athlete.sport.nom}
-            </p>
+            {/* <div>
+              <span>Games Participations</span>
+              <span>{athlete.participations}</span>
+            </div>
+            <div>
+              <span>First Olympic Games</span>
+              <span>{athlete.firstOlympicGames}</span>
+            </div> */}
+            <div>
+              <span>Year of Birth</span>
+              <span>{athlete.dateDeNaissance}</span>
+            </div>
           </div>
         </div>
       </div>

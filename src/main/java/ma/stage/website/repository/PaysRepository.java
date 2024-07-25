@@ -10,5 +10,5 @@ import ma.stage.website.entities.Pays;
 
 public interface PaysRepository extends JpaRepository<Pays, Long> {
     
-
+    boolean existsByNom(String nom);
 }

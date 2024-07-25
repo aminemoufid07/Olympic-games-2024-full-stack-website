@@ -1,6 +1,5 @@
 package ma.stage.website.services;
 
-
 import ma.stage.website.idao.IDao;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class AthleteService implements IDao<Athlete> {
 	}
 
 	// public List<Athlete> findByType(int typeId) {
-	// 	return athleteRepository.findByType(typeId);
+	// return athleteRepository.findByType(typeId);
 	// }
 
 	public Athlete saveAthlete(Athlete athlete) {
@@ -66,4 +65,23 @@ public class AthleteService implements IDao<Athlete> {
 		return athleteRepository.findAll();
 	}
 
+	public List<Athlete> filterAthletes(Long sportId, Long paysId, String search) {
+		if (sportId != null && paysId != null && search != null) {
+			return athleteRepository.findBySportIdAndPaysIdAndNomContaining(sportId, paysId, search);
+		} else if (sportId != null && paysId != null) {
+			return athleteRepository.findBySportIdAndPaysId(sportId, paysId);
+		} else if (sportId != null && search != null) {
+			return athleteRepository.findBySportIdAndNomContaining(sportId, search);
+		} else if (paysId != null && search != null) {
+			return athleteRepository.findByPaysIdAndNomContaining(paysId, search);
+		} else if (sportId != null) {
+			return athleteRepository.findBySportId(sportId);
+		} else if (paysId != null) {
+			return athleteRepository.findByPaysId(paysId);
+		} else if (search != null) {
+			return athleteRepository.findByNomContaining(search);
+		} else {
+			return athleteRepository.findAll();
+		}
+	}
 }

@@ -17,6 +17,10 @@ public class Sport implements Serializable {
     private Long id;
     private String nom;
 
+    public Sport(String nom) {
+        this.nom = nom;
+    }
+
     @Lob
     @Column(length = 100000000)
     private byte[] image;

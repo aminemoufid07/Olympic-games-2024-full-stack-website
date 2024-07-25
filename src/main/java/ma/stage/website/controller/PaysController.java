@@ -117,7 +117,7 @@ public class PaysController {
             Pays updatedPays = paysService.savePays(existingPays);
             return new ResponseEntity<>(updatedPays, HttpStatus.OK);
 
-        } catch (IOException e)     {
+        } catch (IOException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

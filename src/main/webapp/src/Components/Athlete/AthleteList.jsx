@@ -6,11 +6,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useUserRole } from "../../util/userRoleContext";
 import searchPic from "../../assets/search.png"; // Update this path based on your assets folder
 import addPic from "../../assets/stylo.png"; // Update this path based on your assets folder
+import deletePic from "../../assets/supprimer-fichier.png";
+import modifyPic from "../../assets/bouton-modifier.png";
+import resetPic from "../../assets/reset.png";
+import filtrePic from "../../assets/filtre-on.png";
 
 const AthleteList = ({ currentUser }) => {
   const userRole = useUserRole();
   const [selectedSportId, setSelectedSportId] = useState("");
-  const [filteredSportId, setFilteredSportI ] = useState("");
+  const [filteredSportId, setFilteredSportId] = useState("");
   const [selectedPaysId, setSelectedPaysId] = useState("");
   const [filteredPaysId, setFilteredPaysId] = useState("");
   const [athletes, setAthletes] = useState([]);
@@ -31,10 +35,16 @@ const AthleteList = ({ currentUser }) => {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
-  const fetchAthletes = async () => {
+  const fetchAthletes = async (sportId = "", paysId = "") => {
     try {
-      const response = await axios.get("http://localhost:8086/api/v1/athletes");
+      let url = "http://localhost:8086/api/v1/athletes/filter";
+      if (sportId || paysId) {
+        url += `?${sportId ? `sportId=${sportId}&` : ""}${
+          paysId ? `paysId=${paysId}` : ""
+        }`;
+      }
+      console.log("URL de l'API:", url);
+      const response = await axios.get(url);
       const athletesWithImageUrls = response.data.map((athlete) => {
         if (athlete.photo) {
           const byteCharacters = atob(athlete.photo);
@@ -83,6 +93,10 @@ const AthleteList = ({ currentUser }) => {
   };
 
   useEffect(() => {
+    fetchAthletes(filteredSportId, filteredPaysId);
+  }, [filteredSportId, filteredPaysId]);
+
+  useEffect(() => {
     fetchAthletes();
     fetchSports();
     fetchPays();
@@ -116,7 +130,6 @@ const AthleteList = ({ currentUser }) => {
       pays: newAthlete.pays,
       sportId: "",
       sports: newAthlete.sports,
-
       medaille: "",
     });
   };
@@ -160,9 +173,25 @@ const AthleteList = ({ currentUser }) => {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
+  const handleFilterClick = () => {
+    setFilteredSportId(selectedSportId);
+    setFilteredPaysId(selectedPaysId);
+  };
 
-  const filteredAthletes = athletes.filter((athlete) =>
-    athlete.nom.toLowerCase().includes(searchTerm.toLowerCase())
+  const handleSportChange = (e) => {
+    setSelectedSportId(e.target.value);
+  };
+  const handlePaysChange = (e) => {
+    setSelectedPaysId(e.target.value);
+  };
+  const handleResetActualities = () => {
+    setFilteredSportId("");
+    setFilteredPaysId("");
+  };
+  const filteredAthletes = athletes.filter(
+    (athlete) =>
+      athlete.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      athlete.prenom.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) return <p>Chargement...</p>;
@@ -185,6 +214,62 @@ const AthleteList = ({ currentUser }) => {
             src={searchPic}
             alt="Rechercher"
             style={{ width: "30px", height: "30px" }}
+          />
+        </button>
+      </div>
+      <div className="d-flex justify-content-center align-items-center mb-4">
+        <span style={{ marginRight: "10px", fontWeight: "bold" }}>
+          Catégories d'actualités
+        </span>
+
+        <Form.Select
+          className="ms-2"
+          style={{ width: "300px", marginRight: "10px" }}
+          value={selectedSportId}
+          onChange={handleSportChange}
+          aria-label="Filtrer par sport"
+        >
+          <option value="">Sélectionnez un sport</option>
+          {newAthlete.sports.map((sport) => (
+            <option key={sport.id} value={sport.id}>
+              {sport.nom}
+            </option>
+          ))}
+        </Form.Select>
+        <Form.Select
+          className="ms-2"
+          style={{ width: "300px", marginRight: "10px" }}
+          value={selectedPaysId}
+          onChange={handlePaysChange}
+          aria-label="Filtrer par pays"
+        >
+          <option value="">Sélectionnez un pays</option>
+          {newAthlete.pays.map((pays) => (
+            <option key={pays.id} value={pays.id}>
+              {pays.nom}
+            </option>
+          ))}
+        </Form.Select>
+
+        <button
+          onClick={handleFilterClick}
+          style={{ padding: "0", border: "none", background: "none" }}
+        >
+          <img
+            src={filtrePic}
+            alt="Filtrer"
+            style={{ width: "40px", height: "40px", marginLeft: "10px" }}
+          />
+        </button>
+
+        <button
+          onClick={handleResetActualities}
+          style={{ padding: "0", border: "none", background: "none" }}
+        >
+          <img
+            src={resetPic}
+            alt="Réinitialiser"
+            style={{ width: "40px", height: "40px", marginLeft: "10px" }}
           />
         </button>
       </div>
@@ -224,29 +309,40 @@ const AthleteList = ({ currentUser }) => {
               <h5 className="mt-2">
                 {athlete.prenom} {athlete.nom}
               </h5>
-              <p>{athlete.pays.nom}</p>
+              <p>
+                {athlete.pays.nom} , {athlete.sport.nom}
+              </p>
               {userRole === "admin" && (
                 <div className="d-flex justify-content-center mt-2">
-                  <Link to={`/athletes/edit/${athlete.id}`} className="me-2">
-                    <img
-                      src={addPic}
-                      alt="Modifier"
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </Link>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(athlete.id);
-                    }}
-                    style={{ border: "none", background: "none" }}
-                  >
-                    <img
-                      src={addPic}
-                      alt="Supprimer"
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </button>
+                  {userRole === "admin" && (
+                    <Link to={`/athletes/edit/${athlete.id}`}>
+                      <img
+                        src={modifyPic}
+                        alt="Modifier"
+                        style={{ width: "30px", height: "30px" }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </Link>
+                  )}
+                  {userRole === "admin" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(athlete.id);
+                      }}
+                      style={{
+                        padding: "0",
+                        border: "none",
+                        background: "none",
+                      }}
+                    >
+                      <img
+                        src={deletePic}
+                        alt="Supprimer"
+                        style={{ width: "30px", height: "30px" }}
+                      />
+                    </button>
+                  )}
                 </div>
               )}
             </div>

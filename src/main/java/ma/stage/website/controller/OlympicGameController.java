@@ -1,7 +1,5 @@
 package ma.stage.website.controller;
 
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ma.stage.website.entities.*;
 import ma.stage.website.services.*;
-
 
 @RestController
 @RequestMapping("/api/v1/olympicGames")
@@ -65,15 +62,20 @@ public class OlympicGameController {
             return ResponseEntity.ok(service.update(newolympicGame));
         }
     }
-    
-
 
     @PostMapping
     public OlympicGame creatOlympicGame(@RequestBody OlympicGame olympicGame) {
         olympicGame.setId(0L);
         return service.create(olympicGame);
     }
-    
+
+    // Nouveau endpoint pour ajouter plusieurs événements
+    @PostMapping("/batch")
+    public ResponseEntity<Object> addBatch(@RequestBody List<OlympicGame> olympicGames) {
+        for (OlympicGame game : olympicGames) {
+            service.create(game);
+        }
+        return new ResponseEntity<>("Événements ajoutés avec succès", HttpStatus.CREATED);
+    }
 
 }
-

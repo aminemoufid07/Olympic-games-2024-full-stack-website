@@ -4,6 +4,7 @@ import { Modal, Button, Form, Container, Row, Col } from "react-bootstrap";
 import modifyPic from "../../assets/bouton-modifier.png";
 import deletePic from "../../assets/supprimer.png";
 import addPic from "../../assets/stylo.png";
+import { Link } from "react-router-dom";
 
 const SportList = () => {
   const [sports, setSports] = useState([]);
@@ -184,13 +185,13 @@ const SportList = () => {
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h1>Liste des Sports</h1>
-            <Button variant="outline-primary" onClick={handleShow}>
+            {/* <Button variant="outline-primary" onClick={handleShow}>
               <img
                 src={addPic}
                 alt="Ajouter"
                 style={{ width: "30px", height: "30px" }}
               />
-            </Button>
+            </Button> */}
           </div>
         </Col>
       </Row>
@@ -204,15 +205,15 @@ const SportList = () => {
               <ul>
                 {groupedSports[letter].map((sport) => (
                   <li key={sport.id}>
-                    {sport.nom}
-                    <Button variant="link" onClick={() => handleEdit(sport.id)}>
+                    <Link to={`/sports/${sport.id}`}>{sport.nom}</Link>
+                    {/* <Button variant="link" onClick={() => handleEdit(sport.id)}>
                       <img
                         src={modifyPic}
                         alt="Modifier"
                         style={{ width: "20px", height: "20px" }}
                       />
-                    </Button>
-                    <Button
+                    </Button> */}
+                    {/* <Button
                       variant="link"
                       onClick={() => handleDelete(sport.id)}
                     >
@@ -221,7 +222,7 @@ const SportList = () => {
                         alt="Supprimer"
                         style={{ width: "20px", height: "20px" }}
                       />
-                    </Button>
+                    </Button> */}
                   </li>
                 ))}
               </ul>
