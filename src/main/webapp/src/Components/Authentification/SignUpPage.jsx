@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth, db } from "../../util/firebase";
 import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import {
@@ -11,7 +11,15 @@ import {
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { serverTimestamp } from "firebase/firestore";
-import { Card, Form, Button, Container, Row, Col } from "react-bootstrap";
+import {
+  Card,
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  Modal,
+} from "react-bootstrap";
 import logo from "../../assets/casanet logo.jpeg";
 
 const SignUpPage = () => {
@@ -21,7 +29,21 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [sports, setSports] = useState([]);
+  const [selectedSports, setSelectedSports] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch sports from your backend API
+    const fetchSports = async () => {
+      const response = await fetch("http://localhost:8086/api/v1/sports");
+      const data = await response.json();
+      setSports(data);
+    };
+
+    fetchSports();
+  }, []);
 
   const handleSignUp = async (event) => {
     event.preventDefault();
@@ -31,7 +53,6 @@ const SignUpPage = () => {
     }
 
     try {
-      // Vérifier si l'email existe déjà
       const emailQuery = query(
         collection(db, "users"),
         where("email", "==", email)
@@ -42,7 +63,6 @@ const SignUpPage = () => {
         return;
       }
 
-      // Vérifier si le nom d'utilisateur existe déjà
       const usernameQuery = query(
         collection(db, "users"),
         where("username", "==", username)
@@ -66,15 +86,22 @@ const SignUpPage = () => {
         username: username,
         role: "user",
         createdAt: serverTimestamp(),
+        sports: selectedSports,
       });
 
-      // Déconnecter l'utilisateur immédiatement après l'inscription
       await signOut(auth);
-
-      navigate("/compte"); // Rediriger vers la page de connexion après l'inscription
+      navigate("/compte");
     } catch (error) {
       setError(error.message);
     }
+  };
+
+  const handleCheckboxChange = (sport) => {
+    setSelectedSports((prevSelectedSports) =>
+      prevSelectedSports.includes(sport)
+        ? prevSelectedSports.filter((s) => s !== sport)
+        : [...prevSelectedSports, sport]
+    );
   };
 
   return (
@@ -89,7 +116,12 @@ const SignUpPage = () => {
               <Card.Title className="text-center mb-4">
                 Créez votre compte
               </Card.Title>
-              <Form onSubmit={handleSignUp}>
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setShowModal(true);
+                }}
+              >
                 <Form.Group className="mb-3" controlId="formBasicFullName">
                   <Form.Label>Nom complet</Form.Label>
                   <Form.Control
@@ -138,16 +170,10 @@ const SignUpPage = () => {
                     required
                   />
                 </Form.Group>
-
-
                 {error && <p style={{ color: "red" }}>{error}</p>}
-                <br />
-                
-
                 <Button variant="primary" type="submit" className="w-100 mb-3">
                   Créer un compte
                 </Button>
-
                 <div className="text-center">
                   Vous avez déjà un compte ?{" "}
                   <Button
@@ -164,6 +190,27 @@ const SignUpPage = () => {
           <br />
         </Col>
       </Row>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Choisissez vos sports préférés</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSignUp}>
+            {sports.map((sport) => (
+              <Form.Check
+                type="checkbox"
+                key={sport.id}
+                id={sport.id}
+                label={sport.nom}
+                onChange={() => handleCheckboxChange(sport.nom)}
+              />
+            ))}
+            <Button variant="primary" type="submit" className="w-100 mt-3">
+              Confirmer
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };

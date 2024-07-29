@@ -23,10 +23,35 @@ public class Pays {
     @Column(length = 100000000)
     private byte[] image;
     private String imageUrl;
-
-    
+    private int goldMedals;
+    private int silverMedals;
+    private int bronzeMedals;
 
     public Pays() {
+    }
+
+    public int getGoldMedals() {
+        return goldMedals;
+    }
+
+    public void setGoldMedals(int goldMedals) {
+        this.goldMedals = goldMedals;
+    }
+
+    public int getSilverMedals() {
+        return silverMedals;
+    }
+
+    public void setSilverMedals(int silverMedals) {
+        this.silverMedals = silverMedals;
+    }
+
+    public int getBronzeMedals() {
+        return bronzeMedals;
+    }
+
+    public void setBronzeMedals(int bronzeMedals) {
+        this.bronzeMedals = bronzeMedals;
     }
 
     public String getNom() {

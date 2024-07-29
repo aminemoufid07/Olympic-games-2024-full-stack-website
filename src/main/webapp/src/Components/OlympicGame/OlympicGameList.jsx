@@ -11,7 +11,9 @@ const OlympicGameList = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await axios.get("http://localhost:8086/api/v1/olympicGames");
+        const response = await axios.get(
+          "http://localhost:8086/api/v1/olympicGames"
+        );
         setGames(response.data);
         setLoading(false);
       } catch (error) {
@@ -39,16 +41,17 @@ const OlympicGameList = () => {
     <div className="container">
       <br />
       <h1>Liste des Jeux Olympiques</h1>
-      <Link to="/olympicGames/new" className="btn btn-primary mb-3">Ajouter un nouveau jeu</Link>
+      <Link to="/olympicGames/new" className="btn btn-primary mb-3">
+        Ajouter un nouveau jeu
+      </Link>
       <table className="table">
         <thead>
           <tr>
-            
             <th>Nom</th>
             <th>Sport</th>
             <th>Date Prévue</th>
-            {/* <th>Heure de debut</th>
-            <th>Heure de fin</th> */}
+            <th>Heure de debut</th>
+            {/* <th>Heure de fin</th>  */}
             <th>Sexe</th>
             {/* <th>Médias</th> */}
             <th>Actions</th>
@@ -57,18 +60,27 @@ const OlympicGameList = () => {
         <tbody>
           {games.map((game) => (
             <tr key={game.id}>
-             
               <td>{game.nom}</td>
               <td>{game.sport.nom}</td>
               <td>{new Date(game.datePrevue).toLocaleDateString()}</td>
 
-              {/* <td>{game.heureDepart}</td>
-              <td>{game.heureFin}</td> */}
+              <td>{game.heureDepart}</td>
+
               <td>{game.sexe}</td>
               {/* <td>{game.media}</td> */}
               <td>
-                <Link to={`/olympicGames/${game.id}/edit`} className="btn btn-warning btn-sm">Modifier</Link>
-                <button onClick={() => deleteGame(game.id)} className="btn btn-danger btn-sm ml-2">Supprimer</button>
+                <Link
+                  to={`/olympicGames/${game.id}/edit`}
+                  className="btn btn-warning btn-sm"
+                >
+                  Modifier
+                </Link>
+                <button
+                  onClick={() => deleteGame(game.id)}
+                  className="btn btn-danger btn-sm ml-2"
+                >
+                  Supprimer
+                </button>
               </td>
             </tr>
           ))}

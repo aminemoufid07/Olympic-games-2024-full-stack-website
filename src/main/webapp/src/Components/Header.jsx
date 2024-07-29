@@ -19,7 +19,6 @@ const Header = ({ currentUser }) => {
 
   return (
     <header className="bg-white">
-   
       <nav className="flex justify-between items-center w-[92%] mx-auto py-4">
         <div>
           <Link to="/">
@@ -42,13 +41,13 @@ const Header = ({ currentUser }) => {
                 Athletes
               </Link>
             </li>
-            {userRole === "admin" && (
-              <li>
-                <Link className="hover:text-gray-500" to="/sports">
-                  Sports
-                </Link>
-              </li>
-            )}
+            {/* {userRole === "admin" && ( */}
+            <li>
+              <Link className="hover:text-gray-500" to="/sports">
+                Sports
+              </Link>
+            </li>
+            {/* )} */}
             <li>
               <Link className="hover:text-gray-500" to="/pays">
                 Pays
@@ -60,15 +59,20 @@ const Header = ({ currentUser }) => {
               </Link>
             </li>
             <li>
+              <Link className="hover:text-gray-500" to="/results">
+                Resultats
+              </Link>
+            </li>
+            <li>
               <Link className="hover:text-gray-500" to="/communiques">
                 Communiques de presse du cnom
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link className="hover:text-gray-500" to="/olympicGames">
                 Events
               </Link>
-            </li>
+            </li> */}
             {userRole === "admin" && (
               <li>
                 <Link className="hover:text-gray-500" to="/userManagement">

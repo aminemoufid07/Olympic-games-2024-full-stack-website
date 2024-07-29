@@ -310,7 +310,7 @@ const AthleteList = ({ currentUser }) => {
                 {athlete.prenom} {athlete.nom}
               </h5>
               <p>
-                {athlete.pays.nom} , {athlete.sport.nom}
+                {athlete.pays.nom} ,  {athlete.sport.nom}
               </p>
               {userRole === "admin" && (
                 <div className="d-flex justify-content-center mt-2">

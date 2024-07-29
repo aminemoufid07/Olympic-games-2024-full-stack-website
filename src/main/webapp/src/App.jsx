@@ -13,6 +13,7 @@ import AthleteList from "./Components/Athlete/AthleteList";
 import AthleteDetail from "./Components/Athlete/AthleteDetail";
 import AthleteEdit from "./Components/Athlete/AthleteEdit";
 import OlympicGameList from "./Components/OlympicGame/OlympicGameList";
+import Results from "./Components/OlympicGame/Results";
 import PaysList from "./Components/Pays/PaysList";
 // import OlympicGameDetail from "./Components/OlympicGame/OlympicGameDetail";
 // import OlympicGameEdit from "./Components/OlympicGame/OlympicGameEdit";
@@ -76,13 +77,14 @@ function App() {
               > */}
               <Route path="/sports" element={<SportList />} />
               {/* </Route> */}
-              <Route path="/sports/:id" element={<SportDetail />} />
+              {/* <Route path="/sports/:id" element={<SportDetail />} />
               <Route
                 path="/pays"
                 element={<PrivateRoute allowedRoles={["admin"]} />}
               >
                 <Route path="/pays" element={<PaysList />} />
-              </Route>
+              </Route> */}
+              <Route path="/pays" element={<PaysList />} />
 
               <Route path="/actualites" element={<ActualiteList />} />
               <Route path="/actualites/edit/:id" element={<ActualiteEdit />} />
@@ -101,7 +103,8 @@ function App() {
                 path="/communiques/edit/:id"
                 element={<CommuniqueEdit />}
               />
-              <Route path="/olympicGames" element={<OlympicGameList />} />
+              {/* <Route path="/olympicGames" element={<OlympicGameList />} /> */}
+              <Route path="/results" element={<Results />} />
               {/* <Route path="/olympicGames/:id" element={<OlympicGameDetail />} />
               <Route
                 path="/olympicGames/edit/:id"
