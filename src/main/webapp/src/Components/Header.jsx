@@ -8,6 +8,7 @@ import { useUserRole } from "../util/userRoleContext";
 const Header = ({ currentUser }) => {
   const userRole = useUserRole();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [newsMenuOpen, setNewsMenuOpen] = useState(false); // État pour gérer le sous-menu des actualités
 
   const handleSignOut = () => {
     auth.signOut();
@@ -17,12 +18,18 @@ const Header = ({ currentUser }) => {
     setMenuOpen(!menuOpen);
   };
 
+  const onToggleNewsMenu = () => {
+    setNewsMenuOpen(!newsMenuOpen);
+  };
+
   return (
     <header className="bg-white">
       <nav className="flex justify-between items-center w-[92%] mx-auto py-4">
         <div>
           <Link to="/">
+          
             <img className="w-16 cursor-pointer" src={logo} alt="Logo" />
+         
           </Link>
         </div>
         <div
@@ -41,21 +48,50 @@ const Header = ({ currentUser }) => {
                 Athletes
               </Link>
             </li>
-            {/* {userRole === "admin" && ( */}
             <li>
               <Link className="hover:text-gray-500" to="/sports">
                 Sports
               </Link>
             </li>
-            {/* )} */}
             <li>
               <Link className="hover:text-gray-500" to="/pays">
                 Pays
               </Link>
             </li>
-            <li>
-              <Link className="hover:text-gray-500" to="/actualites">
+            <li className="relative">
+              <button
+                onClick={onToggleNewsMenu}
+                className="flex items-center hover:text-gray-500"
+              >
                 Actualités
+                <IonIcon
+                  name={newsMenuOpen ? "chevron-up" : "chevron-down"}
+                  className="ml-2 text-xl"
+                />
+              </button>
+              {newsMenuOpen && (
+                <ul
+                  role="menu"
+                  className="absolute z-10 min-w-[180px] overflow-auto rounded-md border border-blue-gray-50 bg-white p-3 font-sans text-sm font-normal text-blue-gray-500 shadow-lg shadow-blue-gray-500/10 focus:outline-none"
+                >
+                  <li
+                    role="menuitem"
+                    className="block w-full cursor-pointer select-none rounded-md px-3 pt-[9px] pb-2 text-start leading-tight transition-all hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
+                  >
+                    <Link to="/actualites">Actualités principales</Link>
+                  </li>
+                  <li
+                    role="menuitem"
+                    className="block w-full cursor-pointer select-none rounded-md px-3 pt-[9px] pb-2 text-start leading-tight transition-all hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
+                  >
+                    <Link to="/communiques">Communiques de presse du cnom</Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+            <li>
+              <Link className="hover:text-gray-500" to="/Calendar">
+                Calendrier
               </Link>
             </li>
             <li>
@@ -64,15 +100,11 @@ const Header = ({ currentUser }) => {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-gray-500" to="/communiques">
-                Communiques de presse du cnom
+              <Link className="hover:text-gray-500" to="/Chatbot">
+                Chatbot
               </Link>
             </li>
-            {/* <li>
-              <Link className="hover:text-gray-500" to="/olympicGames">
-                Events
-              </Link>
-            </li> */}
+            {/* Conditional admin link */}
             {userRole === "admin" && (
               <li>
                 <Link className="hover:text-gray-500" to="/userManagement">

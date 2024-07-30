@@ -12,7 +12,7 @@ import CommuniqueEdit from "./Components/Communique/CommuniqueEdit";
 import AthleteList from "./Components/Athlete/AthleteList";
 import AthleteDetail from "./Components/Athlete/AthleteDetail";
 import AthleteEdit from "./Components/Athlete/AthleteEdit";
-import OlympicGameList from "./Components/OlympicGame/OlympicGameList";
+import Calendar from "./Components/OlympicGame/Calendar";
 import Results from "./Components/OlympicGame/Results";
 import PaysList from "./Components/Pays/PaysList";
 // import OlympicGameDetail from "./Components/OlympicGame/OlympicGameDetail";
@@ -27,6 +27,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { UserRoleProvider } from "./util/userRoleContext.jsx";
 import SportList from "./Components/Sport/SportList.jsx";
 import SportDetail from "./Components/Sport/SportDetail.jsx";
+import Chatbot from "./Components/Chatbot/Chatbot.jsx";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -113,6 +114,8 @@ function App() {
               <Route path="/athletes" element={<AthleteList />} />
               <Route path="/athletes/:id" element={<AthleteDetail />} />
               <Route path="/athletes/edit/:id" element={<AthleteEdit />} />
+              <Route path="/chatbot" element={<Chatbot/>} />
+              <Route path="/calendar" element={<Calendar/>} />
             </Routes>
           </main>
 
