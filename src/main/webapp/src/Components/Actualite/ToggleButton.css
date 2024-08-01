@@ -1,0 +1,31 @@
+.theme-toggle-button {
+  width: 5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  /* transition: background-color 0.3s ease; */
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.toggle-switch {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  transition: transform 0.5s ease;
+  /* background-color: #fbbf24; */
+  transform: translateX(-0.5rem);
+  padding: 0.25rem;
+  color: white;
+}
+.toggle-switch.bg-gray-700 {
+  background-color: #E92B2B;
+}
+.translate-x-full {
+  transform: translateX(1.5rem);
+}
+.-translate-x-2 {
+  transform: translateX(-0.5rem);
+}

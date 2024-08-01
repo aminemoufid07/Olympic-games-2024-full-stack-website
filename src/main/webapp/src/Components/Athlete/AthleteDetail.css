@@ -1,0 +1,81 @@
+.athlete-detail-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.athlete-detail {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.athlete-photo {
+  border-radius: 50%;
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  
+
+  margin-right: 100px;
+}
+
+.athlete-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.athlete-prenom,
+.athlete-nom {
+  font-family: "Olympic Headline", Helvetica, sans-serif;
+  /* font-weight: 10000; */
+  font-weight: bolder;  
+  color: rgb(0, 0, 0);
+  font-size: 60px;
+  line-height: 70px;
+  margin-right: 200px;
+  margin: 0;
+}
+
+.athlete-prenom {
+  margin-bottom: 5px;
+}
+
+.athlete-country{
+  display: flex;
+  align-items: center;
+  margin-top: 100px;
+}
+.athlete-sport {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.athlete-country img {
+  width: 40px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.athlete-stats {
+  margin-top: 20px;
+  
+}
+
+.athlete-stats div {
+  margin-bottom: 10px;
+  
+}
+
+.medal-icons {
+  display: flex;
+}
+
+.medal-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}

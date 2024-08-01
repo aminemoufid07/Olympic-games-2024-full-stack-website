@@ -1,0 +1,9 @@
+.medal-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.medal-icon {
+  width: 24px;
+  height: 24px;
+}
