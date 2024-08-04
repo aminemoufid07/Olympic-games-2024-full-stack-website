@@ -1,0 +1,64 @@
+/* styles.css ou votre fichier CSS */
+.button-container {
+  margin-top: 200px;
+  /* text-align: center; Centrer le bouton */
+}
+
+.button {
+  position: relative;
+  height: 50px;
+  width: 500px; /* Augmenter la largeur pour un bouton plus long */
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 10px;
+  font-size: 18px; /* Augmenter la taille de la police pour une meilleure lisibilité */
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: color 0.5s, box-shadow 0.5s;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background-color: #000000; /* Assurez-vous que la couleur de l'arrière-plan reste noire */
+  transition: width 0.5s;
+  z-index: 0;
+}
+
+.button:hover::before {
+  width: 100%;
+}
+
+.button:hover {
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.button-text {
+  position: relative;
+  z-index: 1;
+}
+
+.button::after {
+  content: '→';
+  position: absolute;
+  right: 20px; /* Ajuster la position à droite */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #000000;
+  opacity: 0;
+  transition: opacity 0.5s;
+  font-size: 20px; /* Ajuster la taille de la police si nécessaire */
+}
+
+.button:hover::after {
+  opacity: 1;
+  color: #ffffff; /* Changer la couleur de la flèche au survol */
+}

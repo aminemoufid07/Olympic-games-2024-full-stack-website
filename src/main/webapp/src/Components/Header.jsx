@@ -5,6 +5,7 @@ import logo from "../assets/logo-ol.svg";
 import { auth } from "../util/firebase";
 import { useUserRole } from "../util/userRoleContext";
 
+
 const Header = ({ currentUser }) => {
   const userRole = useUserRole();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -60,6 +61,7 @@ const Header = ({ currentUser }) => {
               <button
                 onClick={onToggleNewsMenu}
                 className="flex items-center hover:text-gray-500"
+                style={{ padding: "0", border: "none", background: "none" }}
               >
                 Actualités
                 <IonIcon

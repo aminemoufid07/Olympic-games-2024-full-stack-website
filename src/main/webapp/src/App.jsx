@@ -78,13 +78,13 @@ function App() {
               > */}
               <Route path="/sports" element={<SportList />} />
               {/* </Route> */}
-              {/* <Route path="/sports/:id" element={<SportDetail />} />
-              <Route
+              <Route path="/sports/:id" element={<SportDetail />} />
+              {/* <Route
                 path="/pays"
                 element={<PrivateRoute allowedRoles={["admin"]} />}
               >
                 <Route path="/pays" element={<PaysList />} />
-              </Route> */}
+              </Route>  */}
               <Route path="/pays" element={<PaysList />} />
 
               <Route path="/actualites" element={<ActualiteList />} />
@@ -114,8 +114,8 @@ function App() {
               <Route path="/athletes" element={<AthleteList />} />
               <Route path="/athletes/:id" element={<AthleteDetail />} />
               <Route path="/athletes/edit/:id" element={<AthleteEdit />} />
-              <Route path="/chatbot" element={<Chatbot/>} />
-              <Route path="/calendar" element={<Calendar/>} />
+              <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/calendar" element={<Calendar />} />
             </Routes>
           </main>
 

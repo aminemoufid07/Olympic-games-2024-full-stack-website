@@ -13,7 +13,7 @@ import filtrePic from "../../assets/filtre-on.png";
 import maroc from "../../assets/maroc.png";
 import monde from "../../assets/monde.png";
 import "../Actualite/ToggleButton.css";
-
+import "./AthleteList.css";
 const AthleteList = ({ currentUser }) => {
   const userRole = useUserRole();
   const [selectedSportId, setSelectedSportId] = useState("");
@@ -198,10 +198,10 @@ const AthleteList = ({ currentUser }) => {
       athlete.prenom.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const filteredAthletes = isActivated
-  ? filteredAthletesByTitle.filter((athlete) => athlete.pays.nom === "Morocco")
-  : filteredAthletesByTitle;
-
-  
+    ? filteredAthletesByTitle.filter(
+        (athlete) => athlete.pays.nom === "Morocco"
+      )
+    : filteredAthletesByTitle;
 
   const handleToggleClick = () => {
     setIsActivated(!isActivated);
@@ -214,30 +214,59 @@ const AthleteList = ({ currentUser }) => {
     <div className="container">
       <h1 className="text-center my-4">ATHLÈTES</h1>
       <div className="d-flex justify-content-center mb-4">
-        <input
-          type="text"
-          className="form-control"
-          style={{ width: "300px" }}
-          placeholder="Rechercher un athlète..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <button style={{ border: "none", background: "none" }}>
-          <img
-            src={searchPic}
-            alt="Rechercher"
-            style={{ width: "30px", height: "30px" }}
+        <div className="d-flex align-items-center" style={{ width: "700px" }}>
+          <input
+            type="search"
+            className="flex-grow-1 rounded border border-solid border-neutral-200 bg-transparent px-3 py-2 text-base font-normal leading-[1.6] text-surface outline-none transition duration-200 ease-in-out placeholder:text-neutral-500 focus:border-primary"
+            placeholder="Rechercher un athlète..."
+            aria-label="Search"
+            id="exampleFormControlInput2"
+            aria-describedby="button-addon2"
+            style={{
+              fontFamily: "AktivGrotesk, Arial, Helvetica, sans-serif",
+              fontSize: "20px",
+              lineHeight: "28px",
+              color: "#2d2d2d",
+              backgroundColor: "#ffffff",
+              borderRadius: "0.25rem",
+              borderColor: "#ced4da",
+              marginRight: "8px", // Ajoutez une marge à droite pour l'espace
+            }}
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
-        </button>
+          <button
+            className="d-flex align-items-center justify-content-center"
+            style={{ border: "none", background: "none" }}
+            aria-label="Search Button"
+            id="button-addon2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              style={{ width: "24px", height: "24px" }}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
+
       <div className="d-flex justify-content-center align-items-center mb-4">
-        <span style={{ marginRight: "10px", fontWeight: "bold" }}>
+        {/* <span style={{ marginRight: "10px", fontWeight: "bold" }}>
           Filtrer la liste
-        </span>
+        </span> */}
 
         <Form.Select
           className="ms-2"
-          style={{ width: "300px", marginRight: "10px" }}
+          style={{ width: "200px", marginRight: "15px" }}
           value={selectedSportId}
           onChange={handleSportChange}
           aria-label="Filtrer par sport"
@@ -278,34 +307,39 @@ const AthleteList = ({ currentUser }) => {
             />
           </div>
         </div>
-        
 
-        <button
-          onClick={handleFilterClick}
-          style={{ padding: "0", border: "none", background: "none" }}
-        >
-          <img
-            src={filtrePic}
-            alt="Filtrer"
-            style={{ width: "40px", height: "40px", marginLeft: "10px" }}
-          />
-        </button>
+        <div className="tooltip-container" style={{ position: 'relative', display: 'inline-block', marginLeft: '20px' }}>
+  <button
+    onClick={handleFilterClick}
+    style={{ padding: "0", border: "none", background: "none" }}
+  >
+    <img
+      src={filtrePic}
+      alt="Filtrer"
+      style={{ width: "40px", height: "40px" }}
+    />
+  </button>
+  <span className="tooltip-text">Filtrer</span>
+</div>
 
-        <button
-          onClick={handleResetActualities}
-          style={{ padding: "0", border: "none", background: "none" }}
-        >
-          <img
-            src={resetPic}
-            alt="Réinitialiser"
-            style={{ width: "40px", height: "40px", marginLeft: "10px" }}
-          />
-        </button>
-        
+
+<div className="tooltip-container" style={{ position: 'relative', display: 'inline-block', marginLeft: '10px' }}>
+  <button
+    onClick={handleResetActualities}
+    style={{ padding: "0", border: "none", background: "none" }}
+  >
+    <img
+      src={resetPic}
+      alt="Réinitialiser"
+      style={{ width: "40px", height: "40px" }}
+    />
+    <span className="tooltip-text">Réinitialiser</span>
+  </button>
+</div>
+
         
       </div>
-      
-      
+
       <div className="d-flex justify-content-end mb-4">
         {userRole === "admin" && (
           <button

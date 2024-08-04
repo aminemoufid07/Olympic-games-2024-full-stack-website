@@ -1,0 +1,119 @@
+/* Container for sports groups */
+.sports-group {
+  margin-bottom: 2rem;
+}
+
+.sports-group h2 {
+  font-family: "Cervo-Medium", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 52px;
+  line-height: 32px;
+  letter-spacing: -1px;
+  /* font-weight: 700; */
+  color: #000;
+  margin-bottom: 2rem;
+}
+
+.sports-group ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.sports-group li {
+  font-family: "Cervo-Light", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: #000;
+  margin-bottom: 0.25rem;
+}
+
+.sports-group a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.sports-group a:hover {
+  text-decoration: underline;
+}
+
+/* Heading Styles */
+h1.text-center.my-4 {
+  font-family: "Cervo-Medium", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 72px;
+  line-height: 46px;
+  letter-spacing: -3px;
+  font-weight: 700;
+  color: #212529;
+  display: flex;
+  margin-left: 600px;
+  text-align: center;
+  padding-bottom: 60px;
+}
+
+.heading-container {
+  text-align: center;
+}
+
+.d-flex.justify-content-between.align-items-center {
+  text-align: center;
+}
+
+
+.sport-item {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sport-link {
+  display: block;
+  position: relative;
+  padding: 1rem; /* Adjust padding as needed */
+  z-index: 10;
+  color: black;
+  text-decoration: none;
+  transition: color 0.5s;
+}
+
+.sport-item:hover .sport-link {
+  color: white;
+}
+
+.sport-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background-color: black;
+  transition: width 0.5s;
+  z-index: 0;
+}
+
+.sport-item:hover::before {
+  width: 70%;
+}
+
+.sport-link::after {
+  content: '→';
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  opacity: 0;
+  transition: opacity 0.5s;
+  color: white;
+
+
+  right: calc(30% + 10px);
+}
+
+.sport-item:hover .sport-link::after {
+  opacity: 1;
+}

@@ -7,6 +7,8 @@ import ma.stage.website.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import ma.stage.website.entities.*;
 
 @Service
@@ -69,4 +71,9 @@ public class SportService implements IDao<Sport> {
 	public boolean existsByNom(String nom) {
 		return sportRepository.existsByNom(nom);
 	}
+
+	public Sport saveSport(Sport sport) {
+		return sportRepository.save(sport);
+	}
+
 }

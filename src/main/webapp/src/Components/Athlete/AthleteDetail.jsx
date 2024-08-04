@@ -90,29 +90,33 @@ const AthleteDetail = () => {
           alt={athlete.nom}
         />
         <div className="athlete-info">
-          <h1 className="athlete-prenom">{athlete.prenom}</h1>
-          <h1 className="athlete-nom">{athlete.nom}</h1>
-          <div className="athlete-country">
-            <img src={athlete.pays.imageUrl} alt={athlete.pays.nom} />
-            <span>{athlete.pays.nom}</span>
-          </div>
-          <div className="athlete-sport">
-            <span>{athlete.sport.nom}</span>
-          </div>
-          <div className="athlete-stats">
-            <div>
-              <span>Médailles Olympiques</span>
-              {renderMedals(athlete.medaille)}
+          <h1 className="athlete-prenom">{athlete.prenom.toUpperCase()}</h1> 
+          <h2 className="athlete-nom">{athlete.nom.toUpperCase()}</h2> 
+          <div className="athlete-country-sport">
+            <div className="athlete-country">
+              <img src={athlete.pays.imageUrl} alt={athlete.pays.nom} />
+              <span>{athlete.pays.nom}</span>
             </div>
-            <div>
-              <span>Année de naissance</span>
-              <span>{athlete.dateDeNaissance}</span>
+            <div className="athlete-sport">
+              <span>{athlete.sport.nom}</span>
+              </div>
+              <div className="athlete-stats">
+            <div className="stat-row">
+              <div className="stat-label">Médailles Olympiques</div>
+              <div className="stat-value">{renderMedals(athlete.medaille)}</div>
+            </div>
+            <div className="stat-row">
+              <div className="stat-label">Année de naissance</div>
+              <div className="stat-value">{athlete.dateDeNaissance}</div>
+            </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
+  
+  
+  };
 
 export default AthleteDetail;

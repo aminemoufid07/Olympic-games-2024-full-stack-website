@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* styles.css ou votre fichier CSS */
+.custom-button {
+  background-color: #a6c1ee; /* Couleur de fond par défaut */
+  color: white; /* Couleur du texte par défaut */
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease; /* Transition douce */
+}
+
+.custom-button:hover {
+  background-color: #87acec; /* Couleur de fond au survol */
+}
+
+.custom-link {
+  color: inherit; /* Inherit current text color */
+  text-decoration: none; /* Supprimer la décoration du texte */
+}
+
+.custom-link:hover {
+  color: gray; /* Couleur du texte au survol */
+}

@@ -1,10 +1,10 @@
 package ma.stage.website.controller;
 
-
-
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import ma.stage.website.entities.*;
 import ma.stage.website.services.*;
-
 
 @RestController
 @RequestMapping("/api/v1/sports")
@@ -65,14 +66,61 @@ public class SportController {
             return ResponseEntity.ok(service.update(newsport));
         }
     }
-    
-
 
     @PostMapping
     public Sport creatSport(@RequestBody Sport sport) {
         sport.setId(0L);
         return service.create(sport);
     }
-    
+
+    @Autowired
+    private SportService sportService;
+
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<Sport> addSport(
+            @RequestParam("nom") String nom,
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("detail") String detail) {
+
+        try {
+            Sport sport = new Sport();
+            sport.setNom(nom);
+            sport.setImage(image.getBytes());
+            sport.setDetail(detail);
+            Sport savedSport = sportService.saveSport(sport);
+
+            return new ResponseEntity<>(savedSport, HttpStatus.CREATED);
+        } catch (IOException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<Sport> updateSport(
+            @PathVariable Long id,
+            @RequestParam("nom") String nom,
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("detail") String detail) {
+
+        try {
+            Sport sport = sportService.findById(id);
+
+            if (sport == null) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+
+            sport.setNom(nom);
+            if (image != null && !image.isEmpty()) {
+                sport.setImage(image.getBytes());
+            }
+            sport.setDetail(detail);
+
+            Sport updatedSport = sportService.saveSport(sport);
+            return new ResponseEntity<>(updatedSport, HttpStatus.OK);
+
+        } catch (IOException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
