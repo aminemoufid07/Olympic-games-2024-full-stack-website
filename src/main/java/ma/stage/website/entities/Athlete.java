@@ -2,7 +2,6 @@ package ma.stage.website.entities;
 
 import java.sql.Date;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -127,10 +126,6 @@ public class Athlete {
         this.medaille = medaille;
     }
 
-    
-
- 
-
     @Override
     public String toString() {
         return "Athlete{" +
@@ -143,5 +138,4 @@ public class Athlete {
                 '}';
     }
 
-    
 }

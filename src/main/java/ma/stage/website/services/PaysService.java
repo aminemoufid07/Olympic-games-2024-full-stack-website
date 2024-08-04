@@ -79,7 +79,9 @@ public class PaysService implements IDao<Pays> {
 	public void save(Pays pays) {
 		paysRepository.save(pays);
 	}
+
 	public List<Pays> getPaysByIds(List<Long> ids) {
         return paysRepository.findAllById(ids);
     }
+
 }

@@ -21,6 +21,7 @@ const Calendar = () => {
           fileUrl={calendarPDF}
           plugins={[defaultLayoutPluginInstance]}
           defaultScale={1.7}
+
         />
       </Worker>
       {/* <div

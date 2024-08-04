@@ -28,6 +28,7 @@ public class Sport implements Serializable {
     @Lob
     @Column(length = 100000000)
     private byte[] image;
+
     @Lob
     @Column(length = 100000)
     private String detail;

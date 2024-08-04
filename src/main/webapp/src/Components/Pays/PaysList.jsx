@@ -64,8 +64,6 @@ const PaysList = () => {
     setShow(true);
   };
 
- 
-
 
   const handleAddOrUpdate = () => {
     if (!newPays.nom) {
