@@ -308,7 +308,7 @@ const AthleteList = ({ currentUser }) => {
           </div>
         </div>
 
-        <div className="tooltip-container" style={{ position: 'relative', display: 'inline-block', marginLeft: '20px' }}>
+        <div className="tooltip-container" style={{ position: 'relative', display: 'inline-block', marginLeft: '10px' }}>
   <button
     onClick={handleFilterClick}
     style={{ padding: "0", border: "none", background: "none" }}

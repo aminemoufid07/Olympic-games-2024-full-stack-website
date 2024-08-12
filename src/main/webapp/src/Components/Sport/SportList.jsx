@@ -162,7 +162,7 @@ const SportList = ({currentUser}) => {
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <div className="heading-container">
-              <h1 className="text-center my-4">Sports</h1>
+              <h1 className="text-center my-4">SPORTS</h1>
             </div>
             
           </div>

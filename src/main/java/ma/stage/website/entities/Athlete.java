@@ -30,8 +30,7 @@ public class Athlete {
     private Pays pays;
     @ManyToOne
     private Sport sport;
-    @ManyToMany
-    private java.util.Collection<OlympicGame> olympicGames;
+   
     private String medaille;
 
     public Athlete() {
@@ -97,13 +96,7 @@ public class Athlete {
         this.sport = sport;
     }
 
-    public java.util.Collection<OlympicGame> getOlympicGames() {
-        return olympicGames;
-    }
-
-    public void setOlympicGames(java.util.Collection<OlympicGame> olympicGames) {
-        this.olympicGames = olympicGames;
-    }
+   
 
     public String getMedaille() {
         return medaille;

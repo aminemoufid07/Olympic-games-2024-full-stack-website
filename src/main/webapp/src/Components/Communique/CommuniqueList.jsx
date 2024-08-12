@@ -3,10 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import deletePic from "../../assets/supprimer-fichier.png";
 import modifyPic from "../../assets/bouton-modifier.png";
-import resetPic from "../../assets/reset.png";
-import searchPic from "../../assets/search.png";
 import addPic from "../../assets/stylo.png";
-import filtrePic from "../../assets/filtre-on.png";
 import { Modal, Button, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useUserRole } from "../../util/userRoleContext";
@@ -21,23 +18,14 @@ const CommuniqueList = ({ currentUser }) => {
     titre: "",
     contenu: "",
     datePublication: "",
-    typeId: "",
-    types: [],
     image: null,
   });
-  const [selectedTypeId, setSelectedTypeId] = useState("");
-  const [filteredTypeId, setFilteredTypeId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchVisible, setSearchVisible] = useState(true); // State for search input visibility
   const navigate = useNavigate();
 
-  const fetchCommuniques = async (typeId = "") => {
+  const fetchCommuniques = async () => {
     try {
-      let url = "http://localhost:8086/api/v1/communiques";
-      if (typeId) {
-        url += `/typeId/${typeId}`;
-      }
-      const response = await axios.get(url);
+      const response = await axios.get("http://localhost:8086/api/v1/communiques");
       const communiquesWithImageUrls = response.data.map((communique) => {
         if (communique.image) {
           const byteCharacters = atob(communique.image);
@@ -89,7 +77,6 @@ const CommuniqueList = ({ currentUser }) => {
       titre: "",
       contenu: "",
       datePublication: "",
-
       image: null,
     });
   };
@@ -100,7 +87,6 @@ const CommuniqueList = ({ currentUser }) => {
     formData.append("titre", newCommunique.titre);
     formData.append("contenu", newCommunique.contenu);
     formData.append("datePublication", newCommunique.datePublication);
-
     if (newCommunique.image) {
       formData.append("image", newCommunique.image);
     }
@@ -129,11 +115,6 @@ const CommuniqueList = ({ currentUser }) => {
     }));
   };
 
-  // const handleToggleSearch = () => {
-  //   setSearchVisible(!searchVisible);
-  //   setSearchTerm(""); // Clear search term when hiding the search input
-  // };
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -147,56 +128,37 @@ const CommuniqueList = ({ currentUser }) => {
 
   return (
     <div className="container">
-      <br />
-      <br />
-      <div className="d-flex justify-content-between align-items-center">
-        <h1 className="my-4">Communiques de presse</h1>
-        {searchVisible && (
-          <input
-            type="text"
-            className="form-control ms-auto"
-            style={{ width: "200px" }}
-            placeholder="Rechercher par titre..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        )}
+      <h1 className="text-center my-4">Communiqués</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex justify-content-center w-100">
+          <div className="d-flex align-items-center w-100" style={{ maxWidth: "700px" }}>
+            <input
+              type="search"
+              className="form-control"
+              placeholder="Rechercher un communiqué..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      {userRole === "admin" && (
         <button
-          // onClick={handleToggleSearch}
-          style={{ padding: "0", border: "none", background: "none" }}
+          className="btn btn-primary mb-4"
+          onClick={() => setShowModal(true)}
         >
           <img
-            src={searchPic}
-            alt="Rechercher"
-            style={{ width: "40px", height: "40px", marginLeft: "10px" }}
+            src={addPic}
+            alt="Ajouter un communiqué"
+            style={{ width: "40px", height: "40px" }}
           />
         </button>
-      </div>
-      <br />
-      <br />
-
-      <br />
-
-      <div className="d-flex justify-content-end align-items-center mb-4">
-        {userRole === "admin" && (
-          <button
-            style={{ padding: "0", border: "none", background: "none" }}
-            onClick={() => setShowModal(true)}
-          >
-            <img
-              src={addPic}
-              alt="Ajouter"
-              style={{ width: "40px", height: "40px" }}
-            />
-          </button>
-        )}
-      </div>
-      <br />
-      <br />
+      )}
 
       <div className="row row-cols-1 row-cols-md-4 g-4">
         {filteredCommuniquesByTitle.map((communique) => (
-          <div key={communique.id} className="col">
+          <div className="col" key={communique.id}>
             <div
               className="card h-100"
               onClick={() => handleCardClick(communique.id)}
@@ -208,19 +170,20 @@ const CommuniqueList = ({ currentUser }) => {
                     src={communique.imageUrl}
                     alt={communique.titre}
                     className="card-img-top"
+                    style={{ height: "200px", objectFit: "cover" }}
                   />
                 )}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    display: "flex",
-                    gap: "5px",
-                  }}
-                >
-                  {userRole === "admin" && (
-                    <Link to={`/communiques/edit/${communique.id}`}>
+                {userRole === "admin" && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      display: "flex",
+                      gap: "5px",
+                    }}
+                  >
+                    <Link to={`/communiques/${communique.id}/edit`}>
                       <img
                         src={modifyPic}
                         alt="Modifier"
@@ -228,8 +191,6 @@ const CommuniqueList = ({ currentUser }) => {
                         onClick={(e) => e.stopPropagation()}
                       />
                     </Link>
-                  )}
-                  {userRole === "admin" && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -247,70 +208,57 @@ const CommuniqueList = ({ currentUser }) => {
                         style={{ width: "30px", height: "30px" }}
                       />
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               <div className="card-body">
-                {communique.titre && (
-                  <h5 className="card-title fw-bold">{communique.titre}</h5>
-                )}
-                {communique.type && communique.type.nom && (
-                  <p className="card-text">{communique.type.nom}</p>
-                )}
-                {communique.datePublication && (
-                  <p className="card-text">
-                    <small className="text-muted">
-                      Date de publication : {communique.datePublication}
-                    </small>
-                  </p>
-                )}
+                <h5 className="card-title fw-bold">{communique.titre}</h5>
+                <p className="card-text">{communique.contenu}</p>
               </div>
             </div>
           </div>
         ))}
       </div>
+
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Ajouter une Actualité</Modal.Title>
+          <Modal.Title>Ajouter un nouveau communiqué</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleAddCommunique}>
-            <Form.Group controlId="formTitre">
+            <Form.Group controlId="titre">
               <Form.Label>Titre</Form.Label>
               <Form.Control
                 type="text"
                 name="titre"
                 value={newCommunique.titre}
                 onChange={handleInputChange}
-                required
               />
             </Form.Group>
-            <Form.Group controlId="formContenu">
+            <Form.Group controlId="contenu">
               <Form.Label>Contenu</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={3}
                 name="contenu"
+                rows={3}
                 value={newCommunique.contenu}
                 onChange={handleInputChange}
-                required
               />
             </Form.Group>
-            <Form.Group controlId="formDatePublication">
-              <Form.Label>Date de Publication</Form.Label>
+            <Form.Group controlId="datePublication">
+              <Form.Label>Date de publication</Form.Label>
               <Form.Control
                 type="date"
                 name="datePublication"
                 value={newCommunique.datePublication}
                 onChange={handleInputChange}
-                required
               />
             </Form.Group>
-            <Form.Group controlId="formImage">
+            <Form.Group controlId="image">
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="file"
-                name="image"
+                accept="image/*"
                 onChange={handleImageChange}
               />
             </Form.Group>
@@ -320,7 +268,6 @@ const CommuniqueList = ({ currentUser }) => {
           </Form>
         </Modal.Body>
       </Modal>
-      <div style={{ height: "200px" }}></div>
     </div>
   );
 };

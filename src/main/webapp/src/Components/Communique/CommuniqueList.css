@@ -1,0 +1,22 @@
+/* Styles spécifiques pour CommuniqueList */
+.communique-title {
+    font-family: Cervo-Light, Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 32px;
+    line-height: 46px;
+    text-align: center;
+    letter-spacing: -2px;
+    font-weight: bold;
+    color: #212529;
+  }
+  
+  .communique-search-input {
+    font-family: AktivGrotesk, Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    line-height: 28px;
+    text-align: start;
+    letter-spacing: normal;
+    color: #2d2d2d;
+    background-color: #ffffff;
+    width: 300px;
+  }
+  

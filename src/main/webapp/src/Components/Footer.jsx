@@ -17,7 +17,7 @@ const Footer = () => {
               aria-label="Reddit"
             >
               {" "}
-              Home{" "}
+              Acceuil{" "}
             </a>
 
             <a
@@ -26,7 +26,7 @@ const Footer = () => {
               aria-label="Reddit"
             >
               {" "}
-              About{" "}
+              A propos{" "}
             </a>
 
             <a
@@ -35,7 +35,7 @@ const Footer = () => {
               aria-label="Reddit"
             >
               {" "}
-              Teams{" "}
+              Partenaires{" "}
             </a>
 
             <a
@@ -62,7 +62,7 @@ const Footer = () => {
 
         <div class="flex flex-col items-center sm:flex-row sm:justify-between">
           <p class="text-sm text-gray-500 dark:text-gray-300">
-            © Copyright 2021. All Rights Reserved.
+            © Copyright 2024. All Rights Reserved.
           </p>
 
           <div class="flex -mx-2">

@@ -10,10 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@azure/identity": "^4.4.1",
-=======
->>>>>>> 7d8f3bb35d760265c64b974f0d6eb17a55985181
+    "@azure/openai": "^2.0.0-beta.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.13",
@@ -26,32 +24,24 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "cheerio": "^1.0.0-rc.12",
-<<<<<<< HEAD
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "firebase": "^10.12.5",
-    "firebase-admin": "^12.2.0",
-    "formik": "^2.4.6",
-    "node-fetch": "^3.3.2",
-    "openai": "^4.53.2",
-=======
     "express": "^4.19.2",
     "firebase": "^10.9.0",
     "firebase-admin": "^12.2.0",
     "formik": "^2.4.6",
->>>>>>> 7d8f3bb35d760265c64b974f0d6eb17a55985181
+    "node-fetch": "^3.3.2",
+    "openai": "^4.55.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-ion-icon": "^4.0.0",
     "react-ionicons": "^4.2.1",
     "react-router-dom": "^6.24.1",
-<<<<<<< HEAD
     "sharp": "^0.33.4",
-=======
->>>>>>> 7d8f3bb35d760265c64b974f0d6eb17a55985181
     "styled-components": "^6.1.11",
     "tailwind": "^4.0.0",
+    "webapp": "file:",
     "yup": "^1.4.0"
   },
   "devDependencies": {

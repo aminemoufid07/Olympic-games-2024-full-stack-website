@@ -115,6 +115,7 @@ function App() {
               <Route path="/athletes/:id" element={<AthleteDetail />} />
               <Route path="/athletes/edit/:id" element={<AthleteEdit />} />
               <Route path="/chatbot" element={<Chatbot />} />
+              
               <Route path="/calendar" element={<Calendar />} />
             </Routes>
           </main>

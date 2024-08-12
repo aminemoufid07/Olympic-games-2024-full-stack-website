@@ -1,112 +1,114 @@
-// import React, { useState } from "react";
-// import axios from "axios";
-// import "./Chatbot.css";
+import React, { useState } from "react";
 
-// <<<<<<< HEAD
-// =======
-// const AZURE_ENDPOINT = "https://amine-llm.openai.azure.com";
-// const AZURE_API_KEY = "89fa7c21362a44ad862d2e74379cf565";
-// const DEPLOYMENT_ID = "gpt-35-turbo";
-// const API_VERSION = "2024-04-01-preview";
+// Define the default system context
+const DEFAULT_SYSTEM_CONTEXT =
+  "Assistant is a large language model trained by OpenAI.";
 
-// >>>>>>> 7d8f3bb35d760265c64b974f0d6eb17a55985181
-// const Chatbot = () => {
-//   const [messages, setMessages] = useState([]);
-//   const [input, setInput] = useState("");
+export function Chatbot({
+  rolePrompt = "You are a helpful assistant.",
+  commandPrompt = "Hello, how can I assist you today?",
+}) {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-//   const handleSend = async () => {
-//     if (input.trim() === "") return;
+  // Configuration values
+  const AzureOpenAIEndpoint = "https://<your-resource-name>.openai.azure.com";
+  const ChatCompletionsDeploymentName = "gpt-4o-mini";
+  const apiVersion = "2024-07-18";
+  const SearchEndpoint = "<your-search-endpoint>";
+  const SearchIndex = "<your-search-index>";
+  const resource = "https://cognitiveservices.azure.com/";
 
-//     const userMessage = { text: input, type: "user" };
-//     setMessages([...messages, userMessage]);
+  const url = `${AzureOpenAIEndpoint}/openai/deployments/${ChatCompletionsDeploymentName}/chat/completions?api-version=${apiVersion}`;
 
-//     try {
-// <<<<<<< HEAD
-//       // Envoyer la question à GPT-4
-//       const response = await axios.post(
-//         "https://chatbot-jo.openai.azure.com/",
-//         {
-//           model: "gpt-35-turbo",
-//           prompt: `You are a chatbot specialized in the Olympics. Only answer questions related to the Olympics. Question: ${input}`,
-//           max_tokens: 150,
-//           temperature: 0.5,
-//         },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${OPENAI_API_KEY}`,
-// =======
-//       const response = await axios.post(
-//         `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_ID}/completions?api-version=${API_VERSION}`,
-//         {
-//           messages: [
-//             {
-//               role: "system",
-//               content:
-//                 "You are an AI assistant that helps people find information.",
-//             },
-//             { role: "user", content: input },
-//           ],
-//           max_tokens: 800,
-//           temperature: 0.7,
-//           top_p: 0.95,
-//           frequency_penalty: 0,
-//           presence_penalty: 0,
-//           stop: null,
-//         },
-//         {
-//           headers: {
-//             "api-key": AZURE_API_KEY,
-// >>>>>>> 7d8f3bb35d760265c64b974f0d6eb17a55985181
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
+  const initialContext = {
+    role: "system",
+    content: rolePrompt || DEFAULT_SYSTEM_CONTEXT,
+  };
 
-// <<<<<<< HEAD
-//       // Récupérer la réponse et l'afficher
-//       const botResponse = {
-//         text: response.data.choices[0].text.trim(),
-// =======
-//       const botResponse = {
-//         text: response.data.choices[0].message.content.trim(),
-// >>>>>>> 7d8f3bb35d760265c64b974f0d6eb17a55985181
-//         type: "bot",
-//       };
-//       setMessages([...messages, userMessage, botResponse]);
-//     } catch (error) {
-//       const errorResponse = {
-//         text: "Sorry, I couldn't fetch a response. Please try again.",
-//         type: "bot",
-//       };
-//       setMessages([...messages, userMessage, errorResponse]);
-//     }
+  const currentConversation = [initialContext];
 
-//     setInput("");
-//   };
+  if (commandPrompt) {
+    currentConversation.push({
+      role: "user",
+      content: commandPrompt,
+    });
+  }
 
-//   return (
-//     <div className="chatbot">
-//       <div className="chatbox">
-//         {messages.map((message, index) => (
-//           <div key={index} className={`message ${message.type}`}>
-//             {message.text}
-//           </div>
-//         ))}
-//       </div>
-//       <div className="input-box">
-//         <input
-//           type="text"
-//           value={input}
-//           onChange={(e) => setInput(e.target.value)}
-//           onKeyPress={(e) => e.key === "Enter" && handleSend()}
+  const sendMessage = async () => {
+    if (!input.trim()) return;
 
-//           placeholder="Ask me about the Olympics..."
+    const userMessage = { role: "user", content: input };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-//         />
-//         <button onClick={handleSend}>Send</button>
-//       </div>
-//     </div>
-//   );
-// };
+    setLoading(true);
+    setError("");
 
-// export default Chatbot;
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": "<your-api-key>", // Replace with your actual API key
+        },
+        body: JSON.stringify({
+          data_sources: [
+            {
+              type: "azure_search",
+              parameters: {
+                endpoint: SearchEndpoint,
+                index_name: SearchIndex,
+                authentication: {
+                  type: "system_assigned_managed_identity",
+                },
+              },
+            },
+          ],
+          messages: [...currentConversation, userMessage],
+        }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to send completion request: ${errorMessage}`);
+      }
+
+      const data = await response.json();
+      const botMessage = data.choices[0].message;
+
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
+      setInput(""); // Clear input after sending
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="chat-container">
+      <div className="chatbox">
+        {messages.map((message, index) => (
+          <div key={index} className={`message ${message.role}`}>
+            {message.content}
+          </div>
+        ))}
+      </div>
+      {loading && <div className="loading">Loading...</div>}
+      {error && <div className="error">{error}</div>}
+      <div className="input-box">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
+    </div>
+  );
+}
+
+export default Chatbot;

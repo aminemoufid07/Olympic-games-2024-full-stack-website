@@ -2,19 +2,17 @@ import React, { useEffect, useState } from "react";
 import "./Results.css";
 import headerResults from "../../assets/header-results.png";
 import addPic from "../../assets/stylo.png";
-import {
-  Modal,
-  Button,
-  Form,
-  Container,
-  Row,
-  Col,
-  Card,
-} from "react-bootstrap";
-function Results() {
+import modifyPic from "../../assets/bouton-modifier.png";
+import { Modal, Button, Form } from "react-bootstrap";
+import { useUserRole } from "../../util/userRoleContext";
+
+function Results({ currentUser }) {
+  const userRole = useUserRole();
   const [countries, setCountries] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedCountryId, setSelectedCountryId] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [gold, setGold] = useState(0);
   const [silver, setSilver] = useState(0);
   const [bronze, setBronze] = useState(0);
@@ -34,7 +32,7 @@ function Results() {
   }, []);
 
   const handleAddMedals = () => {
-    const selectedId = parseInt(selectedCountry, 10);
+    const selectedId = parseInt(selectedCountryId, 10);
     const updatedCountry = countries.find(
       (country) => country.id === selectedId
     );
@@ -65,24 +63,60 @@ function Results() {
         setGold(0);
         setSilver(0);
         setBronze(0);
-        setShowModal(false);
+        setShowAddModal(false);
+      });
+  };
+
+  const handleEditMedals = (country) => {
+    setSelectedCountry(country);
+    setGold(country.goldMedals);
+    setSilver(country.silverMedals);
+    setBronze(country.bronzeMedals);
+    setShowEditModal(true);
+  };
+
+  const handleSaveEditMedals = () => {
+    if (!selectedCountry) return;
+
+    const updatedCountry = { ...selectedCountry };
+    updatedCountry.goldMedals = gold;
+    updatedCountry.silverMedals = silver;
+    updatedCountry.bronzeMedals = bronze;
+
+    fetch(`http://localhost:8086/api/v1/pays/${updatedCountry.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedCountry),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setCountries(
+          countries.map((country) =>
+            country.id === updatedCountry.id ? updatedCountry : country
+          )
+        );
+        setShowEditModal(false);
       });
   };
 
   return (
     <div className="app-container">
-      
-        <div className="header-logo">
-          <img src={headerResults} alt="Olympic Games Logo" />
-        </div>
-        <Button className="add-button" onClick={() => setShowModal(true)}>
-          <img
-            src={addPic}
-            alt="Ajouter"
-            style={{ width: '30px', height: '30px' }}
-          />
-        </Button>
-    
+      <div className="header-logo">
+        <img src={headerResults} alt="Olympic Games Logo" />
+      </div>
+      <Button
+        style={{ padding: "0", border: "none", background: "none" }}
+        className="add-button"
+        onClick={() => setShowAddModal(true)}
+      >
+        <img
+          src={addPic}
+          alt="Ajouter"
+          style={{ width: "50px", height: "50px", marginRight: "20px" }}
+        />
+      </Button>
 
       <table>
         <thead>
@@ -92,6 +126,7 @@ function Results() {
             <th>SILVER</th>
             <th>BRONZE</th>
             <th>TOTAL</th>
+            {userRole === "admin" && <th>ACTIONS</th>}
           </tr>
         </thead>
         <tbody>
@@ -109,58 +144,130 @@ function Results() {
                   country.silverMedals +
                   country.bronzeMedals}
               </td>
+              {userRole === "admin" && (
+                <td>
+                  <Button
+                    onClick={() => handleEditMedals(country)}
+                    style={{ padding: "0", border: "none", background: "none" }}
+                  >
+                    <img
+                      src={modifyPic}
+                      alt="Modifier"
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </Button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
       </table>
-      {/* <button onClick={() => setShowModal(true)}>Add Medals</button> */}
 
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Add Medals</h2>
-            <label>
-              Country:
-              <select
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
+      {/* Modal pour ajouter des médailles */}
+      {showAddModal && (
+        <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Medals</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Country</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={selectedCountryId}
+                  onChange={(e) => setSelectedCountryId(e.target.value)}
+                >
+                  <option value="">Select Country</option>
+                  {countries.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.nom}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Gold</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={gold}
+                  onChange={(e) => setGold(Number(e.target.value))}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Silver</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={silver}
+                  onChange={(e) => setSilver(Number(e.target.value))}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Bronze</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={bronze}
+                  onChange={(e) => setBronze(Number(e.target.value))}
+                />
+              </Form.Group>
+              <Button variant="primary" onClick={handleAddMedals}>
+                Submit
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setShowAddModal(false)}
               >
-                <option value="">Select Country</option>
-                {countries.map((country) => (
-                  <option key={country.id} value={country.id}>
-                    {country.nom}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Gold:
-              <input
-                type="number"
-                value={gold}
-                onChange={(e) => setGold(Number(e.target.value))}
-              />
-            </label>
-            <label>
-              Silver:
-              <input
-                type="number"
-                value={silver}
-                onChange={(e) => setSilver(Number(e.target.value))}
-              />
-            </label>
-            <label>
-              Bronze:
-              <input
-                type="number"
-                value={bronze}
-                onChange={(e) => setBronze(Number(e.target.value))}
-              />
-            </label>
-            <button onClick={handleAddMedals}>Submit</button>
-            <button onClick={() => setShowModal(false)}>Close</button>
-          </div>
-        </div>
+                Close
+              </Button>
+            </Form>
+          </Modal.Body>
+        </Modal>
+      )}
+
+      {/* Modal pour éditer les médailles */}
+      {showEditModal && (
+        <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Medals</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Gold</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={gold}
+                  onChange={(e) => setGold(Number(e.target.value))}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Silver</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={silver}
+                  onChange={(e) => setSilver(Number(e.target.value))}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Bronze</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={bronze}
+                  onChange={(e) => setBronze(Number(e.target.value))}
+                />
+              </Form.Group>
+              <Button variant="primary" onClick={handleSaveEditMedals}>
+                Save
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setShowEditModal(false)}
+              >
+                Close
+              </Button>
+            </Form>
+          </Modal.Body>
+        </Modal>
       )}
     </div>
   );

@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { IonIcon } from "react-ion-icon";
 import logo from "../assets/logo-ol.svg";
 import { auth } from "../util/firebase";
 import { useUserRole } from "../util/userRoleContext";
 
-
 const Header = ({ currentUser }) => {
   const userRole = useUserRole();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [newsMenuOpen, setNewsMenuOpen] = useState(false); // État pour gérer le sous-menu des actualités
+  const [newsMenuOpen, setNewsMenuOpen] = useState(false);
+  const newsMenuRef = useRef(null);
 
   const handleSignOut = () => {
     auth.signOut();
@@ -22,6 +22,19 @@ const Header = ({ currentUser }) => {
   const onToggleNewsMenu = () => {
     setNewsMenuOpen(!newsMenuOpen);
   };
+
+  const handleClickOutside = (event) => {
+    if (newsMenuRef.current && !newsMenuRef.current.contains(event.target)) {
+      setNewsMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="bg-white">
@@ -71,6 +84,7 @@ const Header = ({ currentUser }) => {
               </button>
               {newsMenuOpen && (
                 <ul
+                  ref={newsMenuRef}
                   role="menu"
                   className="absolute z-10 min-w-[180px] overflow-auto rounded-md border border-blue-gray-50 bg-white p-3 font-sans text-sm font-normal text-blue-gray-500 shadow-lg shadow-blue-gray-500/10 focus:outline-none"
                 >
@@ -100,11 +114,10 @@ const Header = ({ currentUser }) => {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-gray-500" to="/Chatbot">
+              <Link className="hover:text-gray-500" to="/chatbot">
                 Chatbot
               </Link>
             </li>
-            {/* Conditional admin link */}
             {userRole === "admin" && (
               <li>
                 <Link className="hover:text-gray-500" to="/userManagement">

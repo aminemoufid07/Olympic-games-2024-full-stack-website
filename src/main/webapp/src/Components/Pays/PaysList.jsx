@@ -64,7 +64,6 @@ const PaysList = () => {
     setShow(true);
   };
 
-
   const handleAddOrUpdate = () => {
     if (!newPays.nom) {
       setFormError("Le champ nom ne peut pas être vide");
@@ -141,8 +140,16 @@ const PaysList = () => {
     <Container>
       <style jsx>{`
         h1 {
-          font-size: 2rem;
-          color: #333;
+          font-size: 42px;
+          color: black;
+          font-weight: bolder;
+           font-family: "Cervo-Medium", Arial, "Helvetica Neue", Helvetica, sans-serif;
+          text-align: center;
+          margin-bottom: 60px;
+          margin-top: 50px;
+          letter-spacing: -2px;
+           display: flex;
+           margin-left: 400px;
         }
         .card-deck {
           display: flex;
@@ -152,6 +159,11 @@ const PaysList = () => {
         }
         .card {
           width: 150px;
+          border: 1px solid #ddd;
+          transition: transform 0.2s;
+        }
+        .card:hover {
+          transform: scale(1.05);
         }
         .card img {
           width: 100%;
@@ -170,17 +182,10 @@ const PaysList = () => {
           height: 30px;
         }
       `}</style>
-      <Row className="my-4">
+      <Row className="my-5">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
-            <h1>Liste des Pays</h1>
-            {/* <Button variant="outline-primary" onClick={handleShow}>
-              <img
-                src={addPic}
-                alt="Ajouter"
-                style={{ width: "30px", height: "30px" }}
-              />
-            </Button> */}
+            <h1>Pays qui participent aux JO Paris 2024</h1>
           </div>
         </Col>
       </Row>
@@ -194,25 +199,6 @@ const PaysList = () => {
                 <Card.Body>
                   <Card.Title>{pays.nom}</Card.Title>
                 </Card.Body>
-                {/* <Card.Footer>
-                  <Button variant="link" onClick={() => handleEdit(pays.id)}>
-                    <img
-                      src={modifyPic}
-                      alt="Modifier"
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </Button>
-                  <Button
-                    variant="link"
-                    onClick={() => handleDelete(pays.id)}
-                  >
-                    <img
-                      src={deletePic}
-                      alt="Supprimer"
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </Button>
-                </Card.Footer> */}
               </Card>
             ))}
           </div>
@@ -264,13 +250,12 @@ const PaysList = () => {
       </Modal>
       <Row>
         <Col>
-        <div>
-        <div style={{ height: "100px" }}></div>
-        </div>
+          <div>
+            <div style={{ height: "100px" }}></div>
+          </div>
         </Col>
-    </Row>
+      </Row>
     </Container>
-     
   );
 };
 
